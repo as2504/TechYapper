@@ -13,7 +13,7 @@ export default defineConfig({
       manifest: {
         name: 'TechYapper — Know tech. Talk tech. Yap tech.',
         short_name: 'TechYapper',
-        description: 'A daily tech knowledge habit: three-level concepts, daily battles, code challenges and your Yap Score.',
+        description: 'Understand technology well enough to talk about it: conversational explanations, interview answers, daily battles and Pro career tools.',
         theme_color: '#F3EFE6',
         background_color: '#F3EFE6',
         display: 'standalone',
@@ -36,7 +36,7 @@ export default defineConfig({
             options: { cacheName: 'google-fonts', expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 } },
           },
           {
-            urlPattern: ({ url }) => url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/rest/v1/') && /\/(concepts|questions|challenges)/.test(url.pathname),
+            urlPattern: ({ url }) => url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/rest/v1/') && /\/(topics|concepts|questions|challenges)/.test(url.pathname),
             handler: 'NetworkFirst',
             options: { cacheName: 'content', networkTimeoutSeconds: 4, expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 } },
           },

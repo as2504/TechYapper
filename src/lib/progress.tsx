@@ -4,7 +4,7 @@ import { useAuth } from './auth'
 import { supabase } from './supabase'
 import { addDays, dateKey } from './dates'
 
-export type ActivityKind = 'read' | 'check' | 'battle' | 'challenge'
+export type ActivityKind = 'read' | 'check' | 'battle' | 'challenge' | 'topic' | 'tcheck' | 'iq'
 
 export interface Activity {
   kind: ActivityKind
@@ -29,6 +29,9 @@ export const XP = {
   battle: { beginner: 10, intermediate: 20, advanced: 30 } as Record<Difficulty, number>,
   challenge: { beginner: 20, intermediate: 30, advanced: 45 } as Record<Difficulty, number>,
   attempt: 2,
+  topic: 15,
+  tcheck: 10,
+  iq: 5,
 }
 
 interface ProgressState {
@@ -156,7 +159,7 @@ export function computeStats(activities: Activity[], savedCount: number) {
   const byDay = new Map<string, number>()
   let xp = 0
   for (const a of activities) { xp += a.xp; byDay.set(a.activity_date, (byDay.get(a.activity_date) ?? 0) + a.xp) }
-  const answered = activities.filter((a) => a.kind === 'battle' || a.kind === 'check')
+  const answered = activities.filter((a) => a.kind === 'battle' || a.kind === 'check' || a.kind === 'tcheck')
   const correct = answered.filter((a) => a.correct).length
   const challenges = activities.filter((a) => a.kind === 'challenge')
 
@@ -179,6 +182,9 @@ export function computeStats(activities: Activity[], savedCount: number) {
     activeToday: byDay.has(today),
     byDay,
     conceptsRead: activities.filter((a) => a.kind === 'read').length,
+    topicsYapped: activities.filter((a) => a.kind === 'topic').length,
+    interviewPracticed: activities.filter((a) => a.kind === 'iq').length,
+    battlesCorrect: activities.filter((a) => a.kind === 'battle' && a.correct).length,
     questionsAnswered: answered.length,
     accuracy: answered.length ? Math.round((correct / answered.length) * 100) : 0,
     challengesDone: challenges.length,
@@ -188,3 +194,15 @@ export function computeStats(activities: Activity[], savedCount: number) {
 }
 
 export const levelXp = (level: number) => 40 * (level - 1) ** 2
+
+/* ───────── Recently explored topics (per-device convenience) ───────── */
+const RECENT_KEY = 'ty:recent-topics'
+export function readRecent(): { slug: string; at: number }[] {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]') } catch { return [] }
+}
+export function pushRecent(slug: string) {
+  try {
+    const next = [{ slug, at: Date.now() }, ...readRecent().filter((r) => r.slug !== slug)].slice(0, 12)
+    localStorage.setItem(RECENT_KEY, JSON.stringify(next))
+  } catch { /* ignore */ }
+}

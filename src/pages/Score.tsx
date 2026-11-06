@@ -58,7 +58,9 @@ export default function Score() {
             {isPro ? `Pro${subscription?.plan === 'pro_preview' ? ' preview' : ''}${subscription?.current_period_end ? ' until ' + new Date(subscription.current_period_end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''}` : 'Free plan'}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Link to="/app/library" className="btn btn-ghost">Saved library</Link>
+          <Link to="/app/leaderboard" className="btn btn-ghost">Leaderboard & badges</Link>
           {guest ? <Link to="/signup" className="btn btn-primary">Create account to keep progress</Link> : <button onClick={signOut} className="btn btn-ghost">Log out</button>}
         </div>
       </section>

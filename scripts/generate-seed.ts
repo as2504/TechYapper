@@ -2,11 +2,13 @@
 // Run: node scripts/generate-seed.ts   (Node 22.18+ strips TS types natively)
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { parseChallenges, parseConcept, parseQuestions } from '../src/content/format.ts'
+import { parseChallenges, parseConcept, parseQuestions, parseTech } from '../src/content/format.ts'
 
 const root = join(import.meta.dirname, '..')
 const dir = join(root, 'src/content/concepts')
 const concepts = readdirSync(dir).filter((f) => f.endsWith('.md')).sort().map((f) => parseConcept(readFileSync(join(dir, f), 'utf8')))
+const tdir = join(root, 'src/content/topics')
+const techs = readdirSync(tdir).filter((f) => f.endsWith('.md')).sort().map((f) => parseTech(readFileSync(join(tdir, f), 'utf8')))
 const questions = parseQuestions(readFileSync(join(root, 'src/content/questions.txt'), 'utf8'))
 const challenges = parseChallenges(readFileSync(join(root, 'src/content/challenges.txt'), 'utf8'))
 
@@ -21,6 +23,23 @@ for (const c of concepts) {
   if (!levels.has(c.difficulty)) errors.push(`${c.slug}: bad difficulty`)
   for (const r of c.related) if (!slugs.has(r)) errors.push(`${c.slug}: unknown related "${r}"`)
   if (c.check.options.length < 2) errors.push(`${c.slug}: check needs options`)
+}
+const techSlugs = new Set(techs.map((t) => t.slug))
+const cats = new Set(['development', 'ai', 'data-cloud', 'backend-infra', 'enterprise', 'security', 'engineering'])
+for (const t of techs) {
+  for (const k of ['title', 'tagline', 'what', 'why', 'how', 'analogy', 'talk10', 'talk30', 'deeper'] as const) if (!t[k]) errors.push(`${t.slug}: missing ${k}`)
+  if (!cats.has(t.category)) errors.push(`${t.slug}: bad category ${t.category}`)
+  if (t.know.length < 3) errors.push(`${t.slug}: needs 3+ know points`)
+  if (!t.sources.length || t.sources.some((s) => !/^https:\/\//.test(s.url))) errors.push(`${t.slug}: sources need https urls`)
+  for (const c of t.concepts) if (!slugs.has(c)) errors.push(`${t.slug}: unknown concept "${c}"`)
+  for (const r of t.related) if (!techSlugs.has(r)) errors.push(`${t.slug}: unknown related topic "${r}"`)
+  if (t.interview.length < 2) errors.push(`${t.slug}: needs 2+ interview questions`)
+  for (const q of t.interview) {
+    if (!q.answer || !q.short || !q.detail) errors.push(`${q.id}: incomplete interview answer`)
+    if (q.followups.some((f) => !f.a)) errors.push(`${q.id}: follow-up without "||" answer`)
+    if (!levels.has(q.level)) errors.push(`${q.id}: bad level`)
+  }
+  if (t.comebacks.some((c) => !c.a)) errors.push(`${t.slug}: comeback without answer`)
 }
 const ids = new Set<string>()
 for (const q of [...questions, ...challenges]) {
@@ -40,6 +59,8 @@ const lines = [
   'begin;',
   ...concepts.map((c) => `insert into public.concepts (slug, topic, difficulty, pro, title, data) values (${lit(c.slug)}, ${lit(c.topic)}, ${lit(c.difficulty)}, ${c.pro}, ${lit(c.title)}, ${json(c)})
   on conflict (slug) do update set topic = excluded.topic, difficulty = excluded.difficulty, pro = excluded.pro, title = excluded.title, data = excluded.data, updated_at = now();`),
+  ...techs.map((t) => `insert into public.topics (slug, category, title, data) values (${lit(t.slug)}, ${lit(t.category)}, ${lit(t.title)}, ${json(t)})
+  on conflict (slug) do update set category = excluded.category, title = excluded.title, data = excluded.data, updated_at = now();`),
   ...questions.map((q) => `insert into public.questions (id, topic, difficulty, pro, data) values (${lit(q.id)}, ${lit(q.topic)}, ${lit(q.difficulty)}, ${q.pro}, ${json(q)})
   on conflict (id) do update set topic = excluded.topic, difficulty = excluded.difficulty, pro = excluded.pro, data = excluded.data;`),
   ...challenges.map((c) => `insert into public.challenges (id, kind, topic, difficulty, pro, data) values (${lit(c.id)}, ${lit(c.kind)}, ${lit(c.topic)}, ${lit(c.difficulty)}, ${c.pro}, ${json(c)})
@@ -47,4 +68,4 @@ const lines = [
   'commit;',
 ]
 writeFileSync(join(root, 'supabase/seed.sql'), lines.join('\n') + '\n')
-console.log(`OK: ${concepts.length} concepts, ${questions.length} questions (${questions.filter((q) => q.pro).length} pro), ${challenges.length} challenges (${challenges.filter((c) => c.pro).length} pro) → supabase/seed.sql`)
+console.log(`OK: ${techs.length} topics (${techs.reduce((n, t) => n + t.interview.length, 0)} interview Qs), ${concepts.length} concepts, ${questions.length} questions (${questions.filter((q) => q.pro).length} pro), ${challenges.length} challenges (${challenges.filter((c) => c.pro).length} pro) → supabase/seed.sql`)

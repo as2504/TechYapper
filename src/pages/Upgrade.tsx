@@ -34,7 +34,7 @@ export default function Upgrade() {
         </ul>
         <div className="mt-8 flex gap-3 flex-wrap">
           <Link to="/app/tracks" className="btn btn-primary">Open interview tracks</Link>
-          <Link to="/app/library" className="btn btn-ghost">Browse the full archive</Link>
+          <Link to="/app/project-yap" className="btn btn-ghost">Open Project Yapping</Link>
         </div>
       </div>
     )
@@ -42,7 +42,7 @@ export default function Upgrade() {
 
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1100px]">
-      <PageHead kicker="Upgrade" title={<>Go <em className="font-normal">Pro</em>.</>} dek="The whole archive, every Deep Dive, the interview tracks and the advanced challenges." />
+      <PageHead kicker="Upgrade" title={<>Go <em className="font-normal">Pro</em>.</>} dek="Project Yapping, Resume Yapping, advanced interview answers, every Deep Dive and the advanced challenges." />
 
       <div className="mt-10 grid lg:grid-cols-[1fr_400px] gap-10">
         <div>

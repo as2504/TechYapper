@@ -28,3 +28,18 @@ D1/D7 retention, daily completion (3/3 tasks), streak distribution, free→Pro c
 
 ## Out of scope (MVP)
 Code execution, leaderboards, AI chat, social features, admin UI (content via text files/SQL).
+
+---
+
+## v2 positioning (Nov 2026)
+
+**Central question:** "Can I talk about this technology after using TechYapper?"
+
+TechYapper is not a course, a documentation site or a roadmap. Roadmaps tell you *what* to learn; TechYapper helps you *understand* it and *say it*.
+
+- **Tech Yapping (core, free):** search any topic → what it is, why it exists, how it works, where it's used, the few things worth knowing, an analogy, and *how to talk about it* (one-breath and 30-second answers, replies to common follow-ups). Optional "Go deeper" with internals, code, trade-offs and sources. Interview questions live inside each topic (core free, advanced Pro).
+- **Project Yapping (Pro):** structured, editable 11-part speaking script for the user's own project. Only the user's facts; gaps are shown, never filled.
+- **Resume Yapping (Pro):** plain-language description → technical / impact / concise bullets, keywords, ATS-conscious checks and job-description coverage. No invented metrics, no score promises.
+- **Yap Battle & competition (free):** daily MCQs and code challenges, XP verified server-side, streaks, badges, weekly / monthly / all-time leaderboard.
+
+Success test: a new user understands the product in seconds, finds a topic by search, can explain it out loud, can go deeper if they want, and can practise interview answers. Pro users can prepare a project explanation and resume bullets.

@@ -2,9 +2,10 @@ import { PublicNav, Footer } from '../components/PublicNav'
 import { PricingTable } from '../components/Pricing'
 
 const FAQ = [
-  ['Is the free plan actually useful?', 'Yes. The daily habit — three concepts, the battle, the code challenges, streaks and your library — is free forever. Pro is for going deeper and going back.'],
-  ['Why not just ask a chatbot?', 'A chatbot answers what you already know to ask. TechYapper decides what is worth knowing today, teaches it in three levels, tests you on it and remembers what you got wrong.'],
+  ['Is the free plan actually useful?', 'Yes. Every topic, the talk-about-it answers, core interview questions, daily battles, XP and the leaderboard are free forever. Pro adds tools for talking about your own work: Project Yapping and Resume Yapping.'],
+  ['Why not just ask a chatbot?', 'A chatbot answers what you already know to ask. TechYapper gives you a curated, checked path through a topic, the words to explain it, the questions people ask next, and practice that tracks your progress.'],
   ['Can I pay in INR with UPI?', 'That is the plan. Checkout will run on Razorpay (UPI, cards, netbanking) once payments go live. Until then you can start a free 7-day Pro preview — no card, no charge.'],
+  ['Does Resume Yapping guarantee an ATS score?', 'No, and no tool honestly can. It helps you use clear verbs and real keywords, and shows which terms from a job description your bullets cover. It never adds experience you did not describe.'],
   ['Student pricing?', 'The yearly plan already works out to about ₹67 a month. Student discounts are on the roadmap.'],
 ]
 

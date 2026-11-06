@@ -1,6 +1,6 @@
 // Plain-text content format parser. Shared by the browser bundle (fallback content)
 // and scripts/generate-seed.ts (Node, type-stripped) — keep it dependency-free.
-import type { Challenge, Concept, Question, QuizCheck } from './types.ts'
+import type { Challenge, Concept, Difficulty, InterviewQ, Question, QuizCheck, Tech } from './types.ts'
 
 function splitSections(body: string): Record<string, string> {
   const out: Record<string, string> = {}
@@ -129,4 +129,62 @@ export function parseChallenges(src: string): Challenge[] {
     pro: head.pro === 'true',
     ...parseQuiz(body),
   }))
+}
+
+const pairs = (s = '') => bullets(s).map((b) => { const [q, a] = b.split('||').map((x) => x.trim()); return { q, a } })
+
+function parseInterview(src: string, slug: string): InterviewQ[] {
+  return splitItems(src).map(({ head, body }, n) => {
+    const parts: Record<string, string> = {}
+    let cur = ''
+    let buf: string[] = []
+    for (const line of body.split(/\r?\n/)) {
+      const m = /^#(\w+)\s*$/.exec(line)
+      if (m) { if (cur) parts[cur] = buf.join('\n').trim(); cur = m[1]; buf = [] } else buf.push(line)
+    }
+    if (cur) parts[cur] = buf.join('\n').trim()
+    return {
+      id: `${slug}-iq${n + 1}`,
+      q: head.q,
+      level: (head.level || 'beginner') as Difficulty,
+      pro: head.pro === 'true',
+      answer: parts.answer ?? '',
+      short: parts.short ?? '',
+      detail: parts.detail ?? '',
+      followups: pairs(parts.followups),
+      mistakes: bullets(parts.mistakes),
+    }
+  })
+}
+
+export function parseTech(src: string): Tech {
+  const { meta, body } = parseFrontmatter(src)
+  const s = splitSections(body)
+  const list = (v = '') => v.split(',').map((x) => x.trim()).filter(Boolean)
+  return {
+    slug: meta.slug,
+    title: meta.title,
+    category: meta.category as Tech['category'],
+    aliases: list(meta.aliases),
+    tagline: meta.tagline ?? '',
+    level: (meta.level || 'beginner') as Difficulty,
+    minutes: Number(meta.minutes || 5),
+    concepts: list(meta.concepts),
+    related: list(meta.related),
+    popular: meta.popular === 'true',
+    what: s.what ?? '',
+    why: s.why ?? '',
+    how: s.how ?? '',
+    where: bullets(s.where),
+    know: bullets(s.know),
+    analogy: s.analogy ?? '',
+    talk10: s.talk10 ?? '',
+    talk30: s.talk30 ?? '',
+    comebacks: pairs(s.comebacks),
+    facts: bullets(s.facts),
+    deeper: s.deeper ?? '',
+    sources: bullets(s.sources).map((b) => { const m = /^\[(.+?)\]\((.+?)\)/.exec(b); return { title: m?.[1] ?? b, url: m?.[2] ?? '' } }),
+    check: parseQuiz(s.check ?? ''),
+    interview: parseInterview(s.interview ?? '', meta.slug),
+  }
 }

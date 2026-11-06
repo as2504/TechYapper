@@ -29,7 +29,8 @@ export function useDaily() {
     return {
       today, concepts, questions, challenges, progress, tasks, past,
       completed: tasks.filter((t) => t.done).length,
-      canRead: (slug: string) => isPro || freeSlugs.has(slug),
+      // Every concept's Basics and Under the Hood are free; only Pro Deep Dives are locked (see ConceptPage).
+      canRead: (slug: string) => isPro || freeSlugs.has(slug) || lib.bySlug.has(slug),
     }
   }, [lib, activities, isPro, today])
 }

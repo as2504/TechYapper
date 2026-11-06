@@ -7,19 +7,17 @@ export const PLANS = {
 } as const
 
 export const FEATURES: { label: string; free: boolean | string; pro: boolean | string }[] = [
-  { label: "Today's Yap — 3 concepts a day", free: true, pro: true },
-  { label: 'Levels 1 & 2 on every concept', free: true, pro: true },
-  { label: 'Daily Yap Battle (5 questions)', free: true, pro: true },
-  { label: 'Daily Code or Explain challenges', free: true, pro: true },
-  { label: 'Streaks, XP and heatmap', free: true, pro: true },
-  { label: 'Saved concept library', free: true, pro: true },
-  { label: 'Knowledge archive', free: 'Last 3 days', pro: 'Everything' },
+  { label: 'Every topic: what it is, how it works, how to talk about it', free: true, pro: true },
+  { label: 'Go deeper: internals, code, trade-offs and sources', free: true, pro: true },
+  { label: 'Interview questions inside each topic', free: 'Core questions', pro: 'All, incl. advanced' },
+  { label: 'Daily Yap Battle and Code or Explain', free: true, pro: true },
+  { label: 'XP, streaks, badges and the leaderboard', free: true, pro: true },
+  { label: 'Concept deep reads (Basics and Under the Hood)', free: true, pro: true },
+  { label: 'Project Yapping: structured scripts for your own projects', free: false, pro: true },
+  { label: 'Resume Yapping: ATS-conscious bullets + job description check', free: false, pro: true },
   { label: 'Level 3 Deep Dives on advanced concepts', free: false, pro: true },
-  { label: 'Interview tracks (Frontend, Backend, AI, Power Platform)', free: 'Step 1 only', pro: true },
-  { label: 'Yap Projects — build plans + talking points for student, dev and interview', free: 'Preview', pro: true },
-  { label: 'Advanced code challenges', free: false, pro: true },
-  { label: 'Premium question collections', free: false, pro: true },
-  { label: 'Weak-spot analytics & learning path', free: false, pro: 'Coming soon' },
+  { label: 'Advanced code challenges and premium question sets', free: false, pro: true },
+  { label: 'Project ideas with build plans and talking points', free: 'Preview', pro: true },
 ]
 
 const Cell = ({ v }: { v: boolean | string }) =>
@@ -33,7 +31,7 @@ export function PricingTable({ cta = 'signup' }: { cta?: 'signup' | 'upgrade' })
         <div className="p-7 sm:p-10">
           <p className="kicker text-muted">Free</p>
           <p className="display text-[64px] font-semibold mt-3">₹0</p>
-          <p className="text-muted mt-1">Forever. The daily habit, fully intact.</p>
+          <p className="text-muted mt-1">Forever. Explore every topic, battle and rank.</p>
           <Link to={cta === 'upgrade' ? '/app' : '/signup'} className="btn btn-ghost mt-7 w-full">{cta === 'upgrade' ? 'Keep yapping free' : 'Start free'}</Link>
         </div>
         <div className="p-7 sm:p-10 bg-ink text-paper relative">
