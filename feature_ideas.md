@@ -1,0 +1,2 @@
+1. premium will open projects to yap about
+    like a user will learn theory and then if they wants to add a project to it.. we can show them a whole project.. and they can yap about it. we can generate multiple different formats for different users.. by tweaking the projects somehow..

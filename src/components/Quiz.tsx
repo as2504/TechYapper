@@ -14,7 +14,7 @@ export function Options({ quiz, chosen, onChoose, disabled }: { quiz: QuizCheck;
         let state = ''
         if (answered) state = i === quiz.answer ? 'correct' : i === chosen ? 'wrong' : 'dim'
         return (
-          <button key={i} type="button" role="radio" aria-checked={chosen === i} className="option rise" style={{ animationDelay: `${i * 40}ms` }}
+          <button key={i} type="button" role="radio" aria-checked={chosen === i} className="option"
             data-state={state} disabled={answered || disabled} onClick={() => onChoose(i)}>
             <span className="option-key">{KEYS[i]}</span>
             <span className="flex-1 text-[15px] leading-snug pt-0.5 [&_code]:inline-code">{inline(opt)}</span>

@@ -22,9 +22,9 @@ export function useDaily() {
       code: done('challenge', challenges.map((c) => c.id)),
     }
     const tasks = [
-      { key: 'read', label: 'Read a yap', done: progress.read >= 1, detail: `${progress.read}/${concepts.length} read` },
-      { key: 'battle', label: 'Finish the battle', done: progress.battle >= questions.length, detail: `${progress.battle}/${questions.length} answered` },
-      { key: 'code', label: 'Crack a challenge', done: progress.code >= 1, detail: `${progress.code}/${challenges.length} solved` },
+      { key: 'read', short: 'Read', label: 'Read a yap', done: progress.read >= 1, detail: `${progress.read}/${concepts.length} read` },
+      { key: 'battle', short: 'Battle', label: 'Finish the battle', done: progress.battle >= questions.length, detail: `${progress.battle}/${questions.length} answered` },
+      { key: 'code', short: 'Code', label: 'Crack a challenge', done: progress.code >= 1, detail: `${progress.code}/${challenges.length} solved` },
     ]
     return {
       today, concepts, questions, challenges, progress, tasks, past,

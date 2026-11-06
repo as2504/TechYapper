@@ -31,7 +31,7 @@ export default function Today() {
             className={`py-4 ${i ? 'pl-3 sm:pl-6 border-l border-line' : ''} pr-2 group`}>
             <div className="flex items-center gap-2">
               <span className={`w-5 h-5 grid place-items-center border ${t.done ? 'bg-ink border-ink text-paper' : 'border-line-2'}`}>{t.done && <Check size={13} strokeWidth={3} />}</span>
-              <span className="text-[13px] sm:text-[15px] font-semibold group-hover:text-accent-ink">{t.label}</span>
+              <span className="text-[13px] sm:text-[15px] font-semibold group-hover:text-accent-ink"><span className="sm:hidden">{t.short}</span><span className="hidden sm:inline">{t.label}</span></span>
             </div>
             <p className="text-xs text-muted mt-1 pl-7 font-mono">{t.detail}</p>
           </Link>
