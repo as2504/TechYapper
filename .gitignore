@@ -7,3 +7,6 @@ dist
 supabase/.temp
 *.log
 .env.supabase.local
+
+.vercel
+.env*
