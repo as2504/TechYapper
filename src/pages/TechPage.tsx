@@ -102,7 +102,7 @@ function SayIt({ t }: { t: Tech }) {
             ))}
           </div>
         </div>
-        <p key={len} className="rise mt-5 font-[family-name:var(--font-display)] text-[22px] sm:text-[28px] leading-[1.3] tracking-[-0.01em] max-w-3xl">“{text}”</p>
+        <p key={len} className="mt-5 font-[family-name:var(--font-display)] text-[22px] sm:text-[28px] leading-[1.3] tracking-[-0.01em] max-w-3xl">“{text}”</p>
         <button onClick={copy} className="mt-6 inline-flex items-center gap-2 text-sm text-paper/70 hover:text-paper">
           {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? 'Copied' : 'Copy'}
         </button>

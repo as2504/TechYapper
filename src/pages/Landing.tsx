@@ -61,7 +61,7 @@ export default function Landing() {
                     ))}
                   </div>
                 </div>
-                <p key={len} className="rise mt-5 font-[family-name:var(--font-display)] text-[21px] sm:text-[25px] leading-[1.35]">“{len === '10' ? demo.talk10 : demo.talk30}”</p>
+                <p key={len} className="mt-5 font-[family-name:var(--font-display)] text-[21px] sm:text-[25px] leading-[1.35]">“{len === '10' ? demo.talk10 : demo.talk30}”</p>
                 {demo.comebacks[0] && (
                   <div className="mt-6 pt-5 border-t border-paper/20 text-[15px]">
                     <p className="text-paper/60">They say: “{demo.comebacks[0].q}”</p>
