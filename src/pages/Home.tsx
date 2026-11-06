@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BookOpen, Check, FileText, Mic, Swords, Code2, Trophy } from 'lucide-react'
+import { ArrowRight, Check, FileText, Mic, Swords, Code2, Trophy } from 'lucide-react'
 import { useLibrary } from '../lib/content'
 import { useAuth } from '../lib/auth'
 import { readRecent, useProgress, useStats } from '../lib/progress'
@@ -39,15 +39,17 @@ export default function Home() {
       {recent.length > 0 && (
         <section className="mt-14">
           <SectionHead title="Continue yapping" />
-          <ul className="grid grid-cols-2 lg:grid-cols-4 border-l border-line">
+          <ul className="mt-3 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {recent.map((t) => {
               const done = !!find('topic', t!.slug)
               const iqs = t!.interview.filter((q) => find('iq', q.id)).length
+              const pct = Math.round(((done ? 1 : 0) + iqs) / (1 + t!.interview.length) * 100)
               return (
-                <li key={t!.slug} className="border-r border-b border-line">
-                  <Link to={`/app/yap/${t!.slug}`} className="group block p-4 sm:p-5 hover:bg-card h-full">
-                    <p className="font-[family-name:var(--font-display)] text-[20px] sm:text-[22px] font-semibold leading-tight group-hover:text-accent-ink">{t!.title}</p>
-                    <p className="mt-2 font-mono text-[11px] text-muted uppercase tracking-wider">{done ? <span className="text-good inline-flex items-center gap-1"><Check size={11} /> Can yap</span> : 'In progress'} · {iqs}/{t!.interview.length} Qs</p>
+                <li key={t!.slug}>
+                  <Link to={`/app/yap/${t!.slug}`} className="group panel block p-4 h-full hover:border-ink-2">
+                    <p className="font-semibold text-[16px] leading-tight group-hover:text-accent-ink">{t!.title}</p>
+                    <div className="mt-4 h-1 bg-paper-2 rounded-full overflow-hidden"><div className="h-full bg-accent" style={{ width: `${Math.max(pct, 4)}%` }} /></div>
+                    <p className="mt-2 text-xs text-muted">{done ? 'You can talk about it' : 'Keep going'}</p>
                   </Link>
                 </li>
               )
@@ -57,22 +59,24 @@ export default function Home() {
       )}
 
       {/* Today's yap + daily challenges */}
-      <section className="mt-14 grid lg:grid-cols-[1.5fr_1fr] gap-px bg-ink border border-ink">
+      <section className="mt-14 grid lg:grid-cols-[1.25fr_1fr] gap-4">
         {today && (
-          <Link to={`/app/yap/${today.slug}`} className="group bg-paper hover:bg-card p-6 sm:p-9 flex flex-col">
-            <p className="kicker text-accent-ink">Today's yap</p>
-            <h2 className="display text-[40px] sm:text-[52px] font-semibold mt-3 group-hover:text-accent-ink">{today.title}</h2>
-            <p className="mt-3 font-[family-name:var(--font-serif)] text-[18px] text-ink-2 leading-snug">{today.tagline}</p>
-            <span className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold">{find('topic', today.slug) ? 'Review it' : 'Learn to talk about it'} <ArrowRight size={16} /></span>
+          <Link to={`/app/yap/${today.slug}`} className="group relative bg-ink text-paper rounded-[3px] p-7 sm:p-9 flex flex-col justify-between min-h-[240px] overflow-hidden">
+            <span className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent" />
+            <div>
+              <p className="kicker text-accent">Today's yap</p>
+              <h2 className="display text-[38px] sm:text-[50px] font-semibold mt-3">{today.title}</h2>
+              <p className="mt-3 text-paper/70 text-[16px] max-w-md line-clamp-2">{today.tagline}</p>
+            </div>
+            <span className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold group-hover:text-accent">{find('topic', today.slug) ? 'Review it' : 'Learn to talk about it'} <ArrowRight size={16} /></span>
           </Link>
         )}
-        <div className="bg-paper p-6 sm:p-8">
-          <p className="kicker text-muted">Daily challenges</p>
-          <ul className="mt-4 divide-y divide-line">
+        <div className="panel p-5 sm:p-6">
+          <p className="label">Daily challenges</p>
+          <ul className="mt-2 divide-y divide-line">
             <Challenge to="/app/battle" icon={Swords} label="Yap Battle" detail={`${d.progress.battle}/${d.questions.length} answered`} done={d.progress.battle >= d.questions.length} />
             <Challenge to="/app/code" icon={Code2} label="Code or Explain" detail={`${d.progress.code}/${d.challenges.length} solved`} done={d.progress.code >= d.challenges.length} />
-            {d.concepts[0] && <Challenge to={`/app/concept/${d.concepts[0].slug}`} icon={BookOpen} label="Today's deep read" detail={d.concepts[0].title} done={!!find('read', d.concepts[0].slug)} />}
-            <Challenge to="/app/leaderboard" icon={Trophy} label="This week's ranking" detail={me ? `You're #${me.rank} · ${me.xp} XP` : guest ? 'Create an account to rank' : 'Earn XP to get ranked'} done={false} />
+            <Challenge to="/app/leaderboard" icon={Trophy} label="Weekly ranking" detail={me ? `#${me.rank} · ${me.xp} XP` : guest ? 'Sign up to rank' : 'Earn XP to rank'} done={false} />
           </ul>
         </div>
       </section>
@@ -80,20 +84,20 @@ export default function Home() {
       {/* Explore */}
       <section className="mt-14">
         <SectionHead title="Explore topics" to="/app/explore" more="All topics" />
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
+        <div className="mt-2 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
           {CATEGORIES.map((c) => {
             const items = lib.techs.filter((t) => t.category === c.id)
             if (!items.length) return null
             return (
-              <li key={c.id} className="py-4 border-b border-line">
-                <Link to={`/app/explore#${c.id}`} className="font-semibold hover:text-accent-ink">{c.label}</Link>
-                <p className="mt-1.5 text-[15px] text-muted leading-relaxed">
-                  {items.map((t, i) => <span key={t.slug}>{i > 0 && ' · '}<Link to={`/app/yap/${t.slug}`} className="hover:text-ink hover:underline underline-offset-4">{t.title}</Link></span>)}
-                </p>
-              </li>
+              <div key={c.id} className="py-4 border-b border-line">
+                <Link to={`/app/explore#${c.id}`} className="kicker text-muted hover:text-ink">{c.label}</Link>
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {items.map((t) => <Link key={t.slug} to={`/app/yap/${t.slug}`} className="text-[14px] font-medium px-2.5 py-1 bg-card border border-line rounded-[3px] hover:border-ink hover:text-ink text-ink-2">{t.title}</Link>)}
+                </div>
+              </div>
             )
           })}
-        </ul>
+        </div>
       </section>
 
       {/* Trending + career tools */}
@@ -126,9 +130,9 @@ export default function Home() {
 
 function SectionHead({ title, to, more }: { title: string; to?: string; more?: string }) {
   return (
-    <div className="flex items-baseline justify-between border-b border-ink pb-2 mb-1">
-      <h2 className="font-[family-name:var(--font-display)] text-[24px] sm:text-[26px] font-semibold tracking-[-0.02em]">{title}</h2>
-      {to && <Link to={to} className="text-sm font-medium underline underline-offset-4">{more}</Link>}
+    <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5 mb-1">
+      <h2 className="font-[family-name:var(--font-display)] text-[22px] sm:text-[24px] font-semibold tracking-[-0.015em]">{title}</h2>
+      {to && <Link to={to} className="text-sm font-medium text-muted hover:text-ink">{more} →</Link>}
     </div>
   )
 }
@@ -137,7 +141,7 @@ function Challenge({ to, icon: Icon, label, detail, done }: { to: string; icon: 
   return (
     <li>
       <Link to={to} className="group flex items-center gap-4 py-3.5">
-        <span className={`w-9 h-9 grid place-items-center border ${done ? 'bg-ink border-ink text-paper' : 'border-line-2 text-ink-2'}`}>{done ? <Check size={16} /> : <Icon size={16} />}</span>
+        <span className={`w-9 h-9 grid place-items-center rounded-[3px] ${done ? 'bg-good text-paper' : 'bg-paper-2 text-ink-2'}`}>{done ? <Check size={16} /> : <Icon size={16} />}</span>
         <span className="flex-1"><span className="block font-semibold group-hover:text-accent-ink">{label}</span><span className="block text-sm text-muted font-mono">{detail}</span></span>
         <ArrowRight size={15} className="text-faint" />
       </Link>

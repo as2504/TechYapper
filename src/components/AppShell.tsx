@@ -1,97 +1,100 @@
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
-import { Home as HomeIcon, Compass, Swords, Code2, Activity, Flame, LogOut, Sparkles, Trophy, Mic, FileText } from 'lucide-react'
+import { Home as HomeIcon, Compass, Swords, Code2, Activity, Flame, LogOut, Sparkles, Trophy, Mic, FileText, Lightbulb, Search } from 'lucide-react'
 import { useEffect } from 'react'
 import { Logo } from './Logo'
 import { useAuth } from '../lib/auth'
 import { useProgress, useStats } from '../lib/progress'
-import { dateKey, issueNumber, prettyDate } from '../lib/dates'
 
 export const NAV = [
-  { to: '/app', end: true, n: '01', label: 'Home', short: 'Home', icon: HomeIcon, mobile: true },
-  { to: '/app/explore', n: '02', label: 'Explore topics', short: 'Explore', icon: Compass, mobile: true },
-  { to: '/app/battle', n: '03', label: 'Yap Battle', short: 'Battle', icon: Swords, mobile: true },
-  { to: '/app/code', n: '04', label: 'Code or Explain', short: 'Code', icon: Code2, mobile: false },
-  { to: '/app/leaderboard', n: '05', label: 'Leaderboard', short: 'Ranks', icon: Trophy, mobile: true },
-  { to: '/app/score', n: '06', label: 'Yap Score', short: 'You', icon: Activity, mobile: true },
+  { to: '/app', end: true, label: 'Home', short: 'Home', icon: HomeIcon, mobile: true },
+  { to: '/app/explore', label: 'Explore topics', short: 'Explore', icon: Compass, mobile: true },
+  { to: '/app/battle', label: 'Yap Battle', short: 'Battle', icon: Swords, mobile: true },
+  { to: '/app/code', label: 'Code or Explain', short: 'Code', icon: Code2, mobile: false },
+  { to: '/app/leaderboard', label: 'Leaderboard', short: 'Ranks', icon: Trophy, mobile: true },
+  { to: '/app/score', label: 'Yap Score', short: 'You', icon: Activity, mobile: true },
 ]
 
 const CAREER = [
-  { to: '/app/project-yap', label: 'Project Yapping' },
-  { to: '/app/resume-yap', label: 'Resume Yapping' },
-  { to: '/app/projects', label: 'Project ideas' },
+  { to: '/app/project-yap', label: 'Project Yapping', icon: Mic },
+  { to: '/app/resume-yap', label: 'Resume Yapping', icon: FileText },
+  { to: '/app/projects', label: 'Project ideas', icon: Lightbulb },
 ]
+
+function Item({ to, end, label, icon: Icon }: { to: string; end?: boolean; label: string; icon: typeof HomeIcon }) {
+  return (
+    <NavLink to={to} end={end}
+      className={({ isActive }) => `relative flex items-center gap-3 h-10 px-3 rounded-[3px] text-[14.5px] transition-colors ${isActive ? 'bg-card text-ink font-semibold shadow-[0_1px_0_var(--color-line)]' : 'text-ink-2 hover:text-ink hover:bg-paper/60 font-medium'}`}>
+      {({ isActive }) => (
+        <>
+          {isActive && <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-accent rounded-r" />}
+          <Icon size={17} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? 'text-accent' : 'text-muted'} />
+          {label}
+        </>
+      )}
+    </NavLink>
+  )
+}
 
 export function AppShell() {
   const { pathname } = useLocation()
   const { guest, displayName, signOut } = useAuth()
   const { isPro, error } = useProgress()
   const stats = useStats()
-  const today = dateKey()
 
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[260px_1fr]">
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col sticky top-0 h-dvh border-r border-line px-6 py-7">
-        <Logo to="/app" />
-        <p className="kicker text-muted mt-6">No. {issueNumber(today)} · {prettyDate(today, { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-        <nav className="mt-6 grid gap-0.5" aria-label="Main">
-          {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.end}
-              className={({ isActive }) => `group flex items-baseline gap-3 py-2.5 border-b border-line transition-colors ${isActive ? 'text-ink' : 'text-muted hover:text-ink'}`}>
-              {({ isActive }) => (
-                <>
-                  <span className={`font-mono text-[11px] ${isActive ? 'text-accent' : ''}`}>{n.n}</span>
-                  <span className={`text-[15px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{n.label}</span>
-                  {isActive && <span className="ml-auto w-1.5 h-1.5 bg-accent self-center" />}
-                </>
-              )}
-            </NavLink>
-          ))}
-          <p className="kicker text-muted mt-6 mb-1">Talk about your work</p>
-          {CAREER.map((c) => (
-            <NavLink key={c.to} to={c.to} className={({ isActive }) => `flex items-baseline gap-3 py-2.5 border-b border-line ${isActive ? 'text-ink font-semibold' : 'text-muted hover:text-ink font-medium'}`}>
-              <span className="text-[15px]">{c.label}</span>{!isPro && <span className="ml-auto pro-tag self-center">PRO</span>}
-            </NavLink>
-          ))}
+    <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
+      {/* Desktop sidebar: the navigation plane */}
+      <aside className="hidden lg:flex flex-col sticky top-0 h-dvh bg-shell border-r border-line px-4 py-6">
+        <div className="px-2"><Logo to="/app" /></div>
+
+        <Link to="/app/explore" className="mt-6 flex items-center gap-2.5 h-10 px-3 bg-card border border-line rounded-[3px] text-sm text-faint hover:border-ink-2 hover:text-muted">
+          <Search size={15} /> Search topics <kbd className="ml-auto font-mono text-[10px] border border-line px-1 rounded-sm">/</kbd>
+        </Link>
+
+        <nav className="mt-5 grid gap-0.5" aria-label="Main">
+          {NAV.map((n) => <Item key={n.to} {...n} />)}
         </nav>
 
-        <div className="mt-8 flex items-center gap-3">
-          <Flame className={stats.activeToday ? 'text-accent' : 'text-faint'} size={22} />
-          <div>
-            <p className="font-[family-name:var(--font-display)] text-[28px] leading-none font-semibold">{stats.streak}<span className="text-[15px] font-normal text-muted"> day streak</span></p>
-            <p className="text-xs text-muted mt-1">{stats.activeToday ? 'Today is in the bag.' : 'Do one thing today to keep it.'}</p>
-          </div>
+        <div className="mt-7 px-3 flex items-center justify-between">
+          <span className="kicker text-faint">Your work</span>
+          {!isPro && <span className="pro-tag">PRO</span>}
         </div>
+        <nav className="mt-2 grid gap-0.5" aria-label="Career tools">
+          {CAREER.map((n) => <Item key={n.to} {...n} />)}
+        </nav>
 
-        <div className="mt-auto grid gap-4">
+        <div className="mt-auto grid gap-3">
+          <Link to="/app/score" className="flex items-center gap-3 px-3 py-2.5 rounded-[3px] hover:bg-paper/60">
+            <Flame size={18} className={stats.activeToday ? 'text-accent' : 'text-faint'} />
+            <span className="text-sm"><strong className="font-semibold">{stats.streak}-day streak</strong><span className="text-muted"> · {stats.xp} XP</span></span>
+          </Link>
           {!isPro && (
-            <Link to="/app/upgrade" className="block border border-ink p-4 hover:bg-ink hover:text-paper transition-colors group">
-              <p className="kicker text-accent-ink group-hover:text-accent">Go Pro</p>
-              <p className="mt-1 text-sm leading-snug">Project and Resume Yapping, advanced interview answers and deep dives. ₹99/mo.</p>
+            <Link to="/app/upgrade" className="flex items-center gap-2 px-3 h-10 rounded-[3px] bg-ink text-paper text-sm font-semibold hover:bg-accent-ink">
+              <Sparkles size={15} className="text-accent" /> Go Pro <span className="ml-auto font-normal text-paper/60">₹99/mo</span>
             </Link>
           )}
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between border-t border-line pt-3 px-1">
             <div className="min-w-0">
-              <p className="font-medium truncate">{displayName}</p>
-              <p className="text-xs text-muted">{guest ? 'Guest · progress on this device' : isPro ? 'Pro member' : 'Free plan'}</p>
+              <p className="text-sm font-semibold truncate">{displayName}</p>
+              <p className="text-xs text-muted">{guest ? 'Guest' : isPro ? 'Pro' : 'Free plan'}</p>
             </div>
             {guest ? (
-              <Link to="/signup" className="text-xs font-semibold underline underline-offset-4">Save progress</Link>
+              <Link to="/signup" className="text-xs font-semibold underline underline-offset-4">Sign up</Link>
             ) : (
-              <button onClick={signOut} className="text-muted hover:text-accent-ink p-2 -mr-2" aria-label="Log out" title="Log out"><LogOut size={16} /></button>
+              <button onClick={signOut} className="text-muted hover:text-accent-ink p-2 -mr-1" aria-label="Log out" title="Log out"><LogOut size={16} /></button>
             )}
           </div>
         </div>
       </aside>
 
       {/* Mobile header */}
-      <header className="lg:hidden sticky top-0 z-30 bg-paper/95 backdrop-blur border-b border-line">
+      <header className="lg:hidden sticky top-0 z-30 bg-shell/95 backdrop-blur border-b border-line">
         <div className="flex items-center justify-between h-14 px-4">
           <Logo to="/app" size={24} />
-          <div className="flex items-center gap-3">
-            {!isPro && <Link to="/app/upgrade" className="pro-tag !py-1" aria-label="Upgrade to Pro"><Sparkles size={11} /> PRO</Link>}
+          <div className="flex items-center gap-4">
+            <Link to="/app/explore" className="text-ink-2" aria-label="Search topics"><Search size={19} /></Link>
             <Link to="/app/project-yap" className="text-ink-2" aria-label="Project Yapping"><Mic size={19} /></Link>
             <Link to="/app/resume-yap" className="text-ink-2" aria-label="Resume Yapping"><FileText size={19} /></Link>
             <Link to="/app/score" className="flex items-center gap-1 font-mono text-sm font-semibold" aria-label={`${stats.streak} day streak`}>
@@ -103,9 +106,9 @@ export function AppShell() {
 
       <main className="min-w-0 pb-24 lg:pb-0">
         {guest && (
-          <div className="border-b border-line bg-paper-2 px-4 sm:px-8 py-2.5 text-[13px] flex items-center justify-between gap-3">
-            <span className="text-ink-2">You're yapping as a guest. Progress lives on this device only.</span>
-            <Link to="/signup" className="font-semibold underline underline-offset-4 shrink-0">Create free account</Link>
+          <div className="border-b border-line px-4 sm:px-8 lg:px-12 py-2 text-[13px] flex items-center justify-between gap-3 text-muted">
+            <span>Browsing as a guest. Progress stays on this device.</span>
+            <Link to="/signup" className="font-semibold text-ink underline underline-offset-4 shrink-0">Save progress</Link>
           </div>
         )}
         {error && <div className="bg-bad-wash text-bad text-sm px-4 sm:px-8 py-2" role="alert">{error}</div>}
@@ -113,15 +116,15 @@ export function AppShell() {
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-paper border-t border-ink pb-safe" aria-label="Main">
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-shell border-t border-line pb-safe" aria-label="Main">
         <div className="grid grid-cols-5">
           {NAV.filter((n) => n.mobile).map((n) => (
             <NavLink key={n.to} to={n.to} end={n.end}
-              className={({ isActive }) => `relative flex flex-col items-center gap-1 pt-2.5 pb-2 text-[11px] font-medium ${isActive ? 'text-ink' : 'text-faint'}`}>
+              className={({ isActive }) => `relative flex flex-col items-center gap-1 pt-2.5 pb-2 text-[11px] font-medium ${isActive ? 'text-ink' : 'text-muted'}`}>
               {({ isActive }) => (
                 <>
-                  {isActive && <span className="absolute top-0 inset-x-4 h-[3px] bg-accent" />}
-                  <n.icon size={20} strokeWidth={isActive ? 2.2 : 1.7} />
+                  {isActive && <span className="absolute top-0 inset-x-5 h-[3px] bg-accent" />}
+                  <n.icon size={20} strokeWidth={isActive ? 2.2 : 1.7} className={isActive ? 'text-accent' : ''} />
                   {n.short}
                 </>
               )}
@@ -133,15 +136,14 @@ export function AppShell() {
   )
 }
 
-/** Page header used across the app — editorial masthead style. */
-export function PageHead({ kicker, title, dek, right }: { kicker: string; title: React.ReactNode; dek?: React.ReactNode; right?: React.ReactNode }) {
+/** Page header used across the app. One title, one short line, optional stat on the right. */
+export function PageHead({ title, dek, right }: { kicker?: string; title: React.ReactNode; dek?: React.ReactNode; right?: React.ReactNode }) {
   return (
-    <header className="border-b border-ink pb-6 sm:pb-8">
+    <header className="pb-6 sm:pb-8 border-b border-line">
       <div className="flex items-end justify-between gap-6">
         <div>
-          <p className="kicker text-accent-ink">{kicker}</p>
-          <h1 className="display text-[44px] sm:text-[64px] font-semibold mt-3">{title}</h1>
-          {dek && <p className="mt-4 text-[17px] sm:text-[19px] text-ink-2 max-w-2xl font-[family-name:var(--font-serif)] leading-snug">{dek}</p>}
+          <h1 className="display text-[38px] sm:text-[54px] font-semibold">{title}</h1>
+          {dek && <p className="mt-3 text-[16px] sm:text-[17px] text-muted max-w-xl leading-snug">{dek}</p>}
         </div>
         {right && <div className="hidden sm:block shrink-0">{right}</div>}
       </div>

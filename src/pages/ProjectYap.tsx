@@ -22,7 +22,7 @@ export default function ProjectYap() {
   const { isPro } = useProgress()
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1120px]">
-      <header className="border-b border-ink pb-6">
+      <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink flex items-center gap-2">Project Yapping <ProTag /></p>
         <h1 className="display text-[40px] sm:text-[58px] font-semibold mt-2">Explain your project like you built it.</h1>
         <p className="mt-3 text-ink-2 max-w-2xl">Tell us the facts about your project. You get an 11-part speaking script with follow-up questions and the points you'll have to defend. Anything you leave out is shown as a gap. We don't fill it in for you.</p>
@@ -38,7 +38,7 @@ function Sample() {
     <div className="mt-8 grid lg:grid-cols-[1fr_380px] gap-10">
       <div>
         <p className="kicker text-muted">Sample · {SAMPLE.name}</p>
-        <ol className="mt-3 border-t border-ink">
+        <ol className="mt-3 border-t border-line-2">
           {sections.slice(0, 4).map((s, i) => (
             <li key={s.key} className="py-4 border-b border-line">
               <p className="font-mono text-[11px] text-accent">{String(i + 1).padStart(2, '0')} · {s.title.toUpperCase()}</p>
@@ -179,7 +179,7 @@ function Builder() {
             </div>
             {docs.length > 0 && (
               <div>
-                <p className="kicker text-muted border-b border-ink pb-2">Saved projects</p>
+                <p className="section-title">Saved projects</p>
                 <ul className="divide-y divide-line">
                   {docs.map((d) => (
                     <li key={d.id} className="flex items-center gap-2 py-2.5">
@@ -204,7 +204,7 @@ function Builder() {
           {links.length > 0 && (
             <p className="mt-4 text-sm text-ink-2">Brush up before the interview: {links.map((l, i) => <span key={l.slug}>{i > 0 && ', '}<Link to={`/app/yap/${l.slug}?tab=interview`} className="font-semibold underline underline-offset-4">{l.tech}</Link></span>)}</p>
           )}
-          <ol className="mt-6 border-t border-ink">
+          <ol className="mt-6 border-t border-line-2">
             {doc.sections.map((s, i) => (
               <SectionCard key={s.key} s={s} n={i + 1} onChange={(script) => setDoc({ ...doc, sections: doc.sections.map((x) => (x.key === s.key ? { ...x, script, edited: true } : x)) })} />
             ))}
@@ -254,7 +254,7 @@ function SectionCard({ s, n, onChange }: { s: ScriptSection; n: number; onChange
 function Group({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
     <fieldset className="grid gap-3">
-      <legend className="flex items-baseline gap-2 border-b border-ink pb-2 mb-2 w-full"><span className="font-mono text-[11px] text-accent">{n}</span><span className="font-[family-name:var(--font-display)] text-[22px] font-semibold">{title}</span></legend>
+      <legend className="flex items-baseline gap-2 border-b border-line-2 pb-2.5 mb-2 w-full"><span className="font-mono text-[11px] text-accent">{n}</span><span className="font-[family-name:var(--font-display)] text-[22px] font-semibold">{title}</span></legend>
       {children}
     </fieldset>
   )

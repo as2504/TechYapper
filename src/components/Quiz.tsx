@@ -43,7 +43,7 @@ export function Explanation({ quiz, chosen, xp }: { quiz: QuizCheck; chosen: num
 export function QuizPrompt({ quiz, size = 'lg' }: { quiz: QuizCheck; size?: 'lg' | 'md' }) {
   return (
     <div className="grid gap-4 mb-5">
-      <h2 className={`${size === 'lg' ? 'text-[26px] sm:text-[32px]' : 'text-[21px] sm:text-[24px]'} font-[family-name:var(--font-display)] leading-[1.12] tracking-[-0.02em] font-medium [&_code]:inline-code`}>
+      <h2 className={`${size === 'lg' ? 'text-[23px] sm:text-[28px]' : 'text-[20px] sm:text-[22px]'} font-[family-name:var(--font-display)] leading-[1.22] tracking-[-0.015em] font-medium [&_code]:inline-code [&_code]:text-[0.72em] [&_code]:align-[0.08em]`}>
         {inline(quiz.prompt)}
       </h2>
       {quiz.code && <CodeBlock code={quiz.code.source} lang={quiz.code.lang} />}

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Flame, Lock } from 'lucide-react'
+import { Flame } from 'lucide-react'
 import { PageHead } from '../components/AppShell'
 import { useProgress, useStats, levelXp } from '../lib/progress'
 import { useLibrary } from '../lib/content'
@@ -18,16 +18,15 @@ export default function Score() {
 
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
-      <PageHead kicker="Pillar 04 · Your record" title={<>Yap <em className="font-normal">Score</em></>}
-        dek="Not points for the sake of points. A log of what you actually know now that you didn't before." />
+      <PageHead title="Yap Score" dek="What you've learned, and how well you know it." />
 
       {/* Hero numbers */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 border-b border-ink">
+      <section className="grid grid-cols-2 lg:grid-cols-4 border-b border-line">
         <Big label="Total XP" value={s.xp.toLocaleString('en-IN')} sub={`Level ${s.level} · ${next - s.xp} XP to ${s.level + 1}`}>
           <div className="mt-3 h-1 bg-line"><div className="h-full bg-accent" style={{ width: `${pct}%` }} /></div>
         </Big>
-        <Big label="Current streak" value={<span className="flex items-center gap-2"><Flame className={s.activeToday ? 'text-accent' : 'text-faint'} size={36} />{s.streak}</span>} sub={`Longest: ${s.longest} days`} border />
-        <Big label="Accuracy" value={`${s.accuracy}%`} sub={`${s.questionsAnswered} questions answered`} border lgBorder />
+        <Big label="Current streak" value={<span className="flex items-center gap-2"><Flame className={s.activeToday ? 'text-accent' : 'text-faint'} size={36} />{s.streak}</span>} sub={`Longest: ${s.longest} day${s.longest === 1 ? '' : 's'}`} border />
+        <Big label="Accuracy" value={`${s.accuracy}%`} sub={`${s.questionsAnswered} question${s.questionsAnswered === 1 ? '' : 's'} answered`} border lgBorder />
         <Big label="Concepts explored" value={s.conceptsRead} sub={`${s.savedCount} saved to library`} border />
       </section>
 
@@ -38,20 +37,13 @@ export default function Score() {
         <div className="grid gap-12 content-start">
           <ByDifficulty />
           <section>
-            <h2 className="kicker text-accent-ink border-b border-ink pb-2">Code or Explain</h2>
+            <h2 className="section-title">Code or Explain</h2>
             <p className="mt-4 display text-[44px] font-semibold">{s.challengesSolved}<span className="text-muted text-[24px] font-normal"> / {s.challengesDone} solved</span></p>
           </section>
-          {!isPro && (
-            <Link to="/app/upgrade" className="border border-ink p-6 group hover:bg-ink hover:text-paper transition-colors block">
-              <p className="kicker text-accent-ink group-hover:text-accent flex items-center gap-1.5"><Lock size={11} /> Pro analytics</p>
-              <p className="mt-2 font-[family-name:var(--font-display)] text-[22px] leading-tight font-semibold">Weak-spot radar & a personal learning path</p>
-              <p className="mt-2 text-sm opacity-80">See which topics drag your accuracy down and get next week's reading planned around them.</p>
-            </Link>
-          )}
         </div>
       </div>
 
-      <section className="mt-16 border-t border-ink pt-6 flex flex-wrap items-center justify-between gap-4">
+      <section className="mt-16 border-t border-line-2 pt-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="font-semibold">{displayName}</p>
           <p className="text-sm text-muted">{guest ? 'Guest — progress is stored on this device only.' : user?.email}{' · '}
@@ -102,9 +94,9 @@ function Heatmap() {
 
   return (
     <section className="mt-12">
-      <div className="flex items-baseline justify-between border-b border-ink pb-2">
-        <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Consistency</h2>
-        <span className="font-mono text-xs text-muted">{activeDays} ACTIVE DAYS · LAST 6 MONTHS</span>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-line-2 pb-2.5">
+        <h2 className="font-[family-name:var(--font-display)] text-[21px] font-semibold tracking-[-0.015em]">Consistency</h2>
+        <span className="text-sm text-muted">{activeDays} active day{activeDays === 1 ? '' : 's'} in the last 6 months</span>
       </div>
       <div className="mt-5 overflow-x-auto no-scrollbar">
         <div className="min-w-[560px]">
@@ -146,23 +138,26 @@ function KnowledgeMap() {
     }
     return [...totals.entries()].map(([t, total]) => ({ t, total, done: done.get(t) ?? 0 })).sort((a, b) => b.done / b.total - a.done / a.total || b.total - a.total)
   }, [concepts, questions, challenges, activities])
+  const started = rows.filter((r) => r.done > 0)
+  const rest = rows.length - started.length
 
   return (
     <section>
-      <h2 className="kicker text-accent-ink border-b border-ink pb-2">Knowledge map · coverage by topic</h2>
+      <h2 className="section-title">Coverage by area</h2>
+      {started.length === 0 && <p className="py-6 text-muted">Nothing yet. Read a concept or answer a battle question and your topics will appear here.</p>}
       <ul className="divide-y divide-line">
-        {rows.map((r) => {
+        {started.map((r) => {
           const pct = Math.round((r.done / r.total) * 100)
           return (
             <li key={r.t} className="py-3 grid grid-cols-[120px_1fr_44px] sm:grid-cols-[150px_1fr_52px] items-center gap-4">
               <span className="text-sm font-medium">{TOPICS[r.t].label}</span>
-              <span className="h-2 bg-paper-2 relative"><span className="absolute inset-y-0 left-0 bg-ink" style={{ width: `${pct}%` }} /></span>
+              <span className="h-2 bg-paper-2 relative"><span className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${pct}%` }} /></span>
               <span className="font-mono text-xs text-right text-muted">{pct}%</span>
             </li>
           )
         })}
       </ul>
-      <p className="text-xs text-muted mt-3">Coverage = concepts read, battle questions and challenges attempted in each topic.</p>
+      {rest > 0 && <p className="text-sm text-muted mt-3">{rest} more topic{rest > 1 ? 's' : ''} not started yet. <Link to="/app/explore" className="font-semibold text-ink underline underline-offset-4">Explore</Link></p>}
     </section>
   )
 }
@@ -178,7 +173,7 @@ function ByDifficulty() {
   }, [questions, activities])
   return (
     <section>
-      <h2 className="kicker text-accent-ink border-b border-ink pb-2">Battle accuracy by level</h2>
+      <h2 className="section-title">Battle accuracy</h2>
       <ul className="divide-y divide-line">
         {(Object.keys(rows) as Difficulty[]).map((d) => (
           <li key={d} className="py-3 flex items-baseline justify-between">

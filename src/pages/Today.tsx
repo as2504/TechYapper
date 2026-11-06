@@ -68,7 +68,7 @@ export default function Today() {
       </article>
 
       {/* Secondary stories */}
-      <section className="mt-12 grid md:grid-cols-2 border-t border-ink">
+      <section className="mt-12 grid md:grid-cols-2 border-t border-line-2">
         {rest.map((c, i) => <StoryCell key={c.slug} c={c} read={!!find('read', c.slug)} className={i ? 'md:border-l md:pl-8' : 'md:pr-8'} />)}
       </section>
 
@@ -96,7 +96,7 @@ export default function Today() {
 
       {/* Back issues */}
       <section className="mt-14">
-        <div className="flex items-baseline justify-between border-b border-ink pb-2">
+        <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
           <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Back issues</h2>
           <Link to="/app/library" className="text-sm font-medium underline underline-offset-4">Full archive</Link>
         </div>

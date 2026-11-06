@@ -25,7 +25,7 @@ export default function Tracks() {
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
       <PageHead kicker="Pro · Structured paths" title={<>Interview <em className="font-normal">Tracks</em></>}
-        dek="Curated sequences of concepts and premium questions, ordered the way interviews actually escalate." />
+        dek="Concepts and questions in the order interviews escalate." />
 
       <div className="mt-6 flex gap-2 overflow-x-auto no-scrollbar">
         {TRACKS.map((t) => (
@@ -37,7 +37,7 @@ export default function Tracks() {
         <div>
           <h2 className="font-[family-name:var(--font-display)] text-[34px] font-semibold tracking-[-0.02em] leading-tight">{track.title}</h2>
           <p className="mt-2 text-ink-2">{track.who}</p>
-          <ol className="mt-6 border-t border-ink divide-y divide-line">
+          <ol className="mt-6 border-t border-line-2 divide-y divide-line">
             {track.concepts.map((s, i) => {
               const c = bySlug.get(s)
               if (!c) return null
@@ -57,7 +57,7 @@ export default function Tracks() {
           {!isPro && <p className="mt-3 text-xs text-muted">Step 01 is free so you can feel the format.</p>}
         </div>
         <div>
-          <p className="kicker text-accent-ink border-b border-ink pb-2">Track question set · {proQs.length} premium questions</p>
+          <p className="section-title">Track question set · {proQs.length} premium questions</p>
           {isPro ? <ProQuestions ids={proQs.map((q) => q.id)} /> : (
             <div className="mt-6"><ProLock title="Practise like it's the real round" body="Premium question sets for this track, with full explanations and accuracy tracking. ₹99/month or ₹799/year." /></div>
           )}

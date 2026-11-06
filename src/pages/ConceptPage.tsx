@@ -119,7 +119,7 @@ export default function ConceptPage() {
 
             {/* Misconceptions */}
             <section className="mt-14">
-              <h2 className="kicker text-accent-ink border-b border-ink pb-2">Common misconceptions</h2>
+              <h2 className="section-title">Common misconceptions</h2>
               <dl className="divide-y divide-line">
                 {c.myths.map((m, i) => (
                   <div key={i} className="py-5 grid sm:grid-cols-2 gap-2 sm:gap-8">
@@ -162,7 +162,7 @@ export default function ConceptPage() {
             <Margin title="In the real world" items={c.realWorld} />
             {c.related.length > 0 && (
               <div>
-                <h3 className="kicker text-accent-ink border-b border-ink pb-2">Related yaps</h3>
+                <h3 className="section-title">Related yaps</h3>
                 <ul className="divide-y divide-line">
                   {c.related.map((r) => lib.bySlug.get(r)).filter(Boolean).map((r) => (
                     <li key={r!.slug}>
@@ -189,7 +189,7 @@ function Margin({ title, items }: { title: string; items: string[] }) {
   if (!items.length) return null
   return (
     <div>
-      <h3 className="kicker text-accent-ink border-b border-ink pb-2">{title}</h3>
+      <h3 className="section-title">{title}</h3>
       <ul className="divide-y divide-line">
         {items.map((f, i) => (
           <li key={i} className="py-3 text-[15px] leading-relaxed text-ink-2 flex gap-3 [&_code]:inline-code">

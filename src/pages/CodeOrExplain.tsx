@@ -18,14 +18,14 @@ export default function CodeOrExplain() {
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
       <PageHead kicker="Pillar 03 · Daily" title={<>Code <em className="font-normal">or</em> Explain</>}
-        dek="Three snippets. Read them like a reviewer, not a compiler. Predict, debug, or explain — then see why." />
+        dek="3 snippets a day. Predict, debug or explain." />
 
       <div className="mt-4 grid gap-0">
         {challenges.map((c, i) => <ChallengeCard key={c.id} c={c} n={i + 1} />)}
       </div>
 
       <section className="mt-16">
-        <div className="flex items-baseline justify-between border-b border-ink pb-2">
+        <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
           <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Advanced challenges</h2>
           <ProTag />
         </div>

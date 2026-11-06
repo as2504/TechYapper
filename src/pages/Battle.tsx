@@ -41,9 +41,8 @@ export default function Battle() {
 
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
-      <PageHead kicker="Pillar 02 · Daily" title={<>Yap <em className="font-normal">Battle</em></>}
-        dek="Five questions. Beginner to advanced. One shot each — no retries, no googling. Explanations after every answer."
-        right={<div className="text-right"><p className="font-mono text-xs text-muted">ACCURACY</p><p className="display text-[48px] font-semibold">{stats.accuracy}%</p></div>} />
+      <PageHead title="Yap Battle" dek="5 questions, beginner to advanced. One try each."
+        right={<div className="flex gap-8 text-right"><Stat k="Accuracy" v={`${stats.accuracy}%`} /><Stat k="Streak" v={`${stats.streak}d`} /></div>} />
 
       {/* Round tracker */}
       <ol className="mt-6 grid grid-cols-5 gap-1.5" aria-label="Rounds">
@@ -64,10 +63,10 @@ export default function Battle() {
       {finished && round >= questions.length ? (
         <Scorecard score={score} total={questions.length} xp={earned} streak={stats.streak} onReview={() => setRound(0)} />
       ) : (
-        <section className="mt-8 grid lg:grid-cols-[minmax(0,760px)_1fr] gap-10">
+        <section className="mt-8 grid xl:grid-cols-[minmax(0,760px)_220px] gap-12">
           <div className="min-w-0" key={q.id}>
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="font-mono text-xs text-muted">ROUND {round + 1}/{questions.length}</span>
+              <span className="font-mono text-xs text-muted">Round {round + 1} of {questions.length}</span>
               <LevelChip level={q.difficulty} />
               <span className="chip">{TOPICS[q.topic].label}</span>
               <span className="ml-auto font-mono text-xs text-accent-ink">{XP.battle[q.difficulty]} XP</span>
@@ -87,15 +86,17 @@ export default function Battle() {
               </>
             )}
           </div>
-          <aside className="hidden lg:block border-l border-line pl-8 content-start">
-            <p className="kicker text-muted">How scoring works</p>
+          <aside className="hidden xl:block content-start">
+            <div className="tint p-5">
+            <p className="label">Scoring</p>
             <ul className="mt-3 text-sm text-ink-2 grid gap-2">
               <li className="flex justify-between"><span>Beginner</span><span className="font-mono">{XP.battle.beginner} XP</span></li>
               <li className="flex justify-between"><span>Intermediate</span><span className="font-mono">{XP.battle.intermediate} XP</span></li>
               <li className="flex justify-between"><span>Advanced</span><span className="font-mono">{XP.battle.advanced} XP</span></li>
               <li className="flex justify-between text-muted"><span>Wrong, but you tried</span><span className="font-mono">{XP.attempt} XP</span></li>
             </ul>
-            <p className="mt-6 text-sm text-muted leading-relaxed">Answers lock once chosen. That's the point — it's a battle, not a quiz you can brute-force.</p>
+            <p className="mt-4 pt-3 border-t border-line-2 text-xs text-muted">Answers lock once chosen.</p>
+            </div>
           </aside>
         </section>
       )}
@@ -137,7 +138,7 @@ function History() {
   if (!past.length) return null
   return (
     <section className="mt-16">
-      <div className="flex items-baseline justify-between border-b border-ink pb-2">
+      <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
         <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Your battle log</h2>
         <span className="font-mono text-xs text-muted">{past.length} ANSWERED</span>
       </div>
@@ -176,7 +177,7 @@ function PremiumSets() {
   ]
   return (
     <section className="mt-16">
-      <div className="flex items-baseline justify-between border-b border-ink pb-2">
+      <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
         <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Premium collections</h2>
         <ProTag />
       </div>
@@ -192,4 +193,8 @@ function PremiumSets() {
       </div>
     </section>
   )
+}
+
+function Stat({ k, v }: { k: string; v: string }) {
+  return <div><p className="kicker text-faint">{k}</p><p className="font-[family-name:var(--font-display)] text-[30px] font-semibold leading-none mt-1.5">{v}</p></div>
 }

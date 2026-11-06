@@ -19,7 +19,7 @@ export default function PricingPage() {
         <p className="mt-6 text-[19px] sm:text-[22px] font-[family-name:var(--font-serif)] text-ink-2 max-w-2xl leading-snug">Free gets you the habit. Pro gets you the archive, the deep dives and the interview tracks.</p>
         <div className="mt-12"><PricingTable /></div>
         <section className="mt-20">
-          <h2 className="kicker text-accent-ink border-b border-ink pb-2">Questions</h2>
+          <h2 className="section-title">Questions</h2>
           <dl className="divide-y divide-line">
             {FAQ.map(([q, a]) => (
               <div key={q} className="py-6 grid sm:grid-cols-[1fr_1.4fr] gap-3 sm:gap-10">

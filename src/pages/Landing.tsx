@@ -25,7 +25,7 @@ export default function Landing() {
 
         {/* Explore */}
         <section className="px-4 sm:px-8 pb-16 max-w-[1040px] mx-auto">
-          <h2 className="kicker text-muted border-b border-ink pb-2">Explore topics</h2>
+          <h2 className="section-title">Explore topics</h2>
           <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
             {CATEGORIES.map((c) => {
               const items = lib.techs.filter((t) => t.category === c.id)
@@ -75,7 +75,7 @@ export default function Landing() {
 
         {/* Ways to yap */}
         <section className="px-4 sm:px-8 py-16 max-w-[1040px] mx-auto">
-          <h2 className="kicker text-muted border-b border-ink pb-2">Ways to get confident</h2>
+          <h2 className="section-title">Ways to get confident</h2>
           <ul className="grid md:grid-cols-3">
             <Way icon={Trophy} title="Battle and rank" body="Daily questions from beginner to advanced. Verified XP, streaks and a weekly leaderboard." to="/app/battle" />
             <Way icon={Mic} title="Project Yapping" pro body="Turn your own project into a clear, structured explanation for interviews. Nothing invented." to="/app/project-yap" />

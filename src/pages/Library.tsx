@@ -25,7 +25,7 @@ export default function Library() {
 
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
-      <PageHead kicker="Your knowledge library" title="Library" dek={`${concepts.length} concepts across ${topics.length} topics. Save the ones you want to be able to explain on demand.`} />
+      <PageHead kicker="Your knowledge library" title="Library" dek={`${concepts.length} deep reads across ${topics.length} areas.`} />
 
       <div className="mt-6 flex flex-wrap items-center gap-4 justify-between">
         <div className="flex border border-ink" role="tablist">
@@ -58,7 +58,7 @@ export default function Library() {
           {tab === 'saved' && <Link to="/app" className="btn btn-primary mt-6">Read today's yap</Link>}
         </div>
       ) : (
-        <ul className="mt-6 border-t border-ink divide-y divide-line">
+        <ul className="mt-6 border-t border-line-2 divide-y divide-line">
           {list.map((c) => {
             const open = canRead(c.slug)
             return (

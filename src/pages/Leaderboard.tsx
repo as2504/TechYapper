@@ -19,7 +19,7 @@ export default function Leaderboard() {
 
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1080px]">
-      <header className="border-b border-ink pb-6">
+      <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink">Leaderboard</p>
         <h1 className="display text-[44px] sm:text-[60px] font-semibold mt-2">Who's yapping most.</h1>
         <p className="mt-3 text-ink-2 max-w-2xl">Rankings use verified XP. Answers are re-checked against the answer key on the server, every question counts once, and reading XP is capped per day. Right answers matter more than clicks.</p>
@@ -39,7 +39,7 @@ export default function Leaderboard() {
           )}
           {error && <p className="mt-5 text-bad text-sm">Couldn't load rankings: {error}</p>}
 
-          <ol className="mt-5 border-t border-ink">
+          <ol className="mt-5 border-t border-line-2">
             {rows === null && <li className="py-6 text-muted kicker">Counting XP<span className="caret">_</span></li>}
             {rows?.length === 0 && <li className="py-6 text-muted">No one is ranked for this period yet. Answer today's battle and you're first.</li>}
             {rows?.map((r) => (
@@ -60,7 +60,7 @@ export default function Leaderboard() {
             <p className="text-muted text-sm">{me ? `${me.xp} verified XP ${PERIODS.find((p) => p.id === period)!.label.toLowerCase()}` : user ? 'Earn XP in battles, challenges and topics to get ranked.' : 'Guests are not ranked.'}</p>
           </div>
 
-          <h2 className="kicker text-muted border-b border-ink pb-2 mt-10 flex items-center gap-2"><Award size={14} /> Badges · {list.filter((b) => b.earned).length}/{list.length}</h2>
+          <h2 className="section-title mt-10 flex items-center gap-2"><Award size={14} /> Badges · {list.filter((b) => b.earned).length}/{list.length}</h2>
           <ul className="divide-y divide-line">
             {list.map((b) => (
               <li key={b.id} className={`flex items-center gap-4 py-3 ${b.earned ? '' : 'opacity-60'}`}>

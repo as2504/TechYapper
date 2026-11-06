@@ -5,6 +5,8 @@
 @theme {
   --color-paper: #F3EFE6;
   --color-paper-2: #EAE5D9;
+  /* Shell: the navigation plane, one step darker than the reading plane */
+  --color-shell: #E8E2D4;
   --color-card: #FBF9F4;
   --color-ink: #16140F;
   --color-ink-2: #3B372E;
@@ -48,7 +50,12 @@
 
 @layer components {
   .display { font-family: var(--font-display); font-variation-settings: "opsz" 144; letter-spacing: -0.025em; line-height: 0.98; }
-  .kicker { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  .kicker { font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+  /* Hierarchy: page title (.display) → section title → label → body → meta (.kicker) */
+  .section-title { display: block; font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; color: var(--color-ink); padding-bottom: 10px; border-bottom: 1px solid var(--color-line-2); font-variation-settings: "opsz" 48; }
+  .label { font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--color-ink-2); }
+  .panel { background: var(--color-card); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+  .tint { background: var(--color-paper-2); border-radius: var(--radius-sm); }
   .rule { border-top: 1px solid var(--color-ink); }
   .hair { border-color: var(--color-line); }
 

@@ -37,19 +37,19 @@ export default function TechPage() {
         <Link to={`/app/explore#${t.category}`} className="hover:text-ink">{cat?.label}</Link>
       </nav>
       <header className="mt-4">
-        <h1 className="display text-[48px] sm:text-[76px] font-semibold">{t.title}</h1>
-        <p className="mt-3 text-[19px] sm:text-[22px] font-[family-name:var(--font-serif)] text-ink-2 leading-snug max-w-3xl">{t.tagline}</p>
-        <p className="mt-4 font-mono text-xs text-muted uppercase tracking-wider">{t.level} · {t.minutes} min · {t.interview.length} interview questions</p>
+        <h1 className="display text-[46px] sm:text-[68px] font-semibold">{t.title}</h1>
+        <p className="mt-3 text-[18px] sm:text-[20px] font-[family-name:var(--font-serif)] text-ink-2 leading-snug max-w-2xl">{t.tagline}</p>
+        <div className="mt-4 flex flex-wrap gap-2"><LevelChip level={t.level} /><span className="chip">{t.minutes} min</span><span className="chip">{t.interview.length} interview Qs</span></div>
       </header>
 
       <SayIt t={t} />
 
       <div className="sticky top-14 lg:top-0 z-20 bg-paper/95 backdrop-blur mt-10 border-b border-ink -mx-4 px-4 sm:mx-0 sm:px-0">
         <div role="tablist" aria-label={`${t.title} sections`} className="flex overflow-x-auto no-scrollbar">
-          {TABS.map((x, i) => (
+          {TABS.map((x) => (
             <button key={x.id} role="tab" aria-selected={tab === x.id} onClick={() => setTab(x.id)}
               className={`relative shrink-0 px-3 sm:px-5 py-3.5 text-[15px] flex items-baseline gap-2 ${tab === x.id ? 'text-ink font-semibold' : 'text-muted hover:text-ink font-medium'}`}>
-              <span className={`font-mono text-[11px] ${tab === x.id ? 'text-accent' : ''}`}>0{i + 1}</span>{x.label}
+              {x.label}
               {x.id === 'interview' && <span className="font-mono text-[11px] text-muted">{t.interview.length}</span>}
               {tab === x.id && <span className="absolute left-0 right-0 -bottom-px h-[3px] bg-accent" />}
             </button>
@@ -68,7 +68,7 @@ export default function TechPage() {
 
       {t.related.length > 0 && (
         <section className="mt-14">
-          <h2 className="kicker text-muted border-b border-ink pb-2">Keep yapping</h2>
+          <h2 className="section-title">Keep yapping</h2>
           <div className="grid sm:grid-cols-3">
             {t.related.map((r) => lib.techBySlug.get(r)).filter(Boolean).map((r, i) => (
               <Link key={r!.slug} to={`/app/yap/${r!.slug}`} className={`group py-5 border-b border-line sm:border-b-0 ${i ? 'sm:border-l sm:pl-6' : ''} sm:pr-6`}>
@@ -114,10 +114,7 @@ function SayIt({ t }: { t: Tech }) {
 function Block({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
     <section className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-10 py-6 border-b border-line first:pt-0">
-      <h2 className="flex md:block items-baseline gap-2">
-        <span className="font-mono text-[11px] text-accent">{n}</span>
-        <span className="block font-[family-name:var(--font-display)] text-[22px] sm:text-[24px] font-semibold leading-tight md:mt-1">{title}</span>
-      </h2>
+      <h2 className="font-[family-name:var(--font-display)] text-[20px] sm:text-[22px] font-semibold leading-tight" data-n={n}>{title}</h2>
       <div className="min-w-0">{children}</div>
     </section>
   )
@@ -132,10 +129,10 @@ function Understand({ t }: { t: Tech }) {
       <Block n="B" title="Why does it exist?"><P s={t.why} /></Block>
       <Block n="C" title="How it works"><P s={t.how} /></Block>
       <Block n="D" title="Think of it like…">
-        <p className="font-[family-name:var(--font-display)] italic text-[21px] sm:text-[24px] leading-snug border-l-2 border-accent pl-5">{t.analogy}</p>
+        <p className="tint font-[family-name:var(--font-serif)] italic text-[19px] sm:text-[21px] leading-snug border-l-2 border-accent px-5 py-4">{t.analogy}</p>
       </Block>
       <Block n="E" title="Where you'll see it">
-        <ul className="grid gap-2">{t.where.map((w) => <li key={w} className="flex gap-3 text-[16px]"><span className="text-accent mt-2 w-1.5 h-1.5 bg-accent shrink-0" />{inline(w)}</li>)}</ul>
+        <ul className="grid gap-2">{t.where.map((w) => <li key={w} className="flex gap-3 text-[16px]"><span className="mt-2.5 w-1.5 h-1.5 bg-accent rounded-full shrink-0" />{inline(w)}</li>)}</ul>
       </Block>
       <Block n="F" title={`${t.know.length} things worth knowing`}>
         <ol className="grid gap-3">{t.know.map((k, i) => (
@@ -160,7 +157,7 @@ function Talk({ t }: { t: Tech }) {
       <section>
         <h2 className="font-[family-name:var(--font-display)] text-[26px] sm:text-[30px] font-semibold">When the conversation keeps going</h2>
         <p className="text-muted mt-1">The follow-ups people actually ask, and a natural way to answer.</p>
-        <div className="mt-5 border-t border-ink divide-y divide-line">
+        <div className="mt-5 border-t border-line-2 divide-y divide-line">
           {t.comebacks.map((c) => (
             <div key={c.q} className="py-5 grid md:grid-cols-[1fr_1.4fr] gap-2 md:gap-8">
               <p className="font-semibold text-[17px]"><span className="kicker text-muted block mb-1">They say</span>“{c.q}”</p>
@@ -192,7 +189,7 @@ function Deeper({ t }: { t: Tech }) {
       <aside className="grid gap-8 content-start">
         {concepts.length > 0 && (
           <div>
-            <h3 className="kicker text-muted border-b border-ink pb-2">Deep reads</h3>
+            <h3 className="section-title">Deep reads</h3>
             <ul className="divide-y divide-line">
               {concepts.map((c) => (
                 <li key={c!.slug}>
@@ -206,7 +203,7 @@ function Deeper({ t }: { t: Tech }) {
           </div>
         )}
         <div>
-          <h3 className="kicker text-muted border-b border-ink pb-2">Sources</h3>
+          <h3 className="section-title">Sources</h3>
           <ul className="divide-y divide-line">
             {t.sources.map((s) => (
               <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer" className="flex items-start justify-between gap-3 py-3 text-sm hover:text-accent-ink">{s.title}<ExternalLink size={13} className="text-faint mt-0.5 shrink-0" /></a></li>
@@ -229,7 +226,7 @@ function Interview({ t }: { t: Tech }) {
   return (
     <div>
       <p className="text-muted max-w-2xl">Questions interviewers really ask about {t.title}. For each one: the points to hit, how to say it, and what comes next.</p>
-      <ol className="mt-6 border-t border-ink">
+      <ol className="mt-6 border-t border-line-2">
         {t.interview.map((q, i) => <IQ key={q.id} q={q} n={i + 1} open={open === q.id} onToggle={() => setOpen(open === q.id ? null : q.id)} />)}
       </ol>
     </div>

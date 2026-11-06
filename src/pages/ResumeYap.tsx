@@ -16,7 +16,7 @@ export default function ResumeYap() {
   const { isPro } = useProgress()
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
-      <header className="border-b border-ink pb-6">
+      <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink flex items-center gap-2">Resume Yapping <ProTag /></p>
         <h1 className="display text-[40px] sm:text-[58px] font-semibold mt-2">Say what you did. Get a bullet you can defend.</h1>
         <p className="mt-3 text-ink-2 max-w-2xl">Describe your work in plain words. You get technical, impact and concise versions, the keywords they cover, and a check against a job description. We never add tools, numbers or responsibilities you didn't give us.</p>
@@ -113,7 +113,7 @@ function Workbench() {
 
       {/* Set + JD */}
       <section>
-        <div className="flex items-baseline justify-between border-b border-ink pb-2">
+        <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
           <h2 className="font-[family-name:var(--font-display)] text-[24px] font-semibold">Your bullets</h2>
           <span className="font-mono text-xs text-muted">{set.bullets.length}</span>
         </div>
@@ -144,7 +144,7 @@ function Workbench() {
         {error && <p className="mt-2 text-sm text-bad">{error}</p>}
 
         <div className="mt-10">
-          <h3 className="kicker text-muted border-b border-ink pb-2">Tailor to a job description</h3>
+          <h3 className="section-title">Tailor to a job description</h3>
           <textarea className="input mt-3 min-h-[110px] text-sm" value={set.jd} onChange={(e) => setSet({ ...set, jd: e.target.value })} placeholder="Paste the job description here" aria-label="Job description" />
           {set.jd.trim() && (
             <div className="mt-4 text-sm">
@@ -163,7 +163,7 @@ function Workbench() {
 
         {docs.length > 0 && (
           <div className="mt-10">
-            <h3 className="kicker text-muted border-b border-ink pb-2">Saved sets</h3>
+            <h3 className="section-title">Saved sets</h3>
             <ul className="divide-y divide-line">
               {docs.map((d) => (
                 <li key={d.id} className="flex items-center gap-3 py-2.5">

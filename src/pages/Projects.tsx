@@ -13,8 +13,8 @@ export function ProjectsIndex() {
   const { bySlug } = useLibrary()
   return (
     <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
-      <PageHead kicker="Pro · From theory to something you built" title={<>Yap <em className="font-normal">Projects</em></>}
-        dek="You've learned the concepts. Now get a real project to build and talk about — tailored for a student portfolio, your day job, or an interview whiteboard." />
+      <PageHead kicker="Pro · From theory to something you built" title="Project ideas"
+        dek="Projects to build from what you've learned, with a plan and talking points." />
       <ul className="mt-2 divide-y divide-line">
         {PROJECTS.map((p, i) => (
           <li key={p.slug}>
@@ -73,11 +73,11 @@ export function ProjectDetail() {
 
       <div className="mt-10 grid lg:grid-cols-[minmax(0,1fr)_360px] gap-10 lg:gap-14" key={persona}>
         <div className="min-w-0">
-          <h2 className="kicker text-accent-ink border-b border-ink pb-2">The brief</h2>
+          <h2 className="section-title">The brief</h2>
           <p className="mt-4 text-[20px] font-[family-name:var(--font-serif)] leading-snug">{v.scope}</p>
           <div className="mt-4 flex flex-wrap gap-2">{v.stack.map((s) => <span key={s} className="chip">{s}</span>)}</div>
 
-          <h2 className="kicker text-accent-ink border-b border-ink pb-2 mt-12">Architecture</h2>
+          <h2 className="section-title mt-12">Architecture</h2>
           <dl className="divide-y divide-line">
             {p.architecture.map((a) => (
               <div key={a.part} className="py-3 grid sm:grid-cols-[200px_1fr] gap-1 sm:gap-6">
@@ -86,7 +86,7 @@ export function ProjectDetail() {
             ))}
           </dl>
 
-          <h2 className="kicker text-accent-ink border-b border-ink pb-2 mt-12">Build it in {v.milestones.length} milestones</h2>
+          <h2 className="section-title mt-12">Build it in {v.milestones.length} milestones</h2>
           <ol className="divide-y divide-line">
             {v.milestones.map((m, i) => {
               const locked = !isPro && i > 0
@@ -113,11 +113,11 @@ export function ProjectDetail() {
                 <p className="mt-2 font-[family-name:var(--font-display)] italic text-[20px] leading-[1.3]">{v.pitch}</p>
               </div>
               <div>
-                <h3 className="kicker text-accent-ink border-b border-ink pb-2">Talking points</h3>
+                <h3 className="section-title">Talking points</h3>
                 <ul className="divide-y divide-line">{v.talkingPoints.map((t) => <li key={t} className="py-3 text-[15px] text-ink-2">{t}</li>)}</ul>
               </div>
               <div>
-                <h3 className="kicker text-accent-ink border-b border-ink pb-2">Follow-ups they'll ask</h3>
+                <h3 className="section-title">Follow-ups they'll ask</h3>
                 <dl className="divide-y divide-line">
                   {v.followUps.map((f) => (
                     <div key={f.q} className="py-3"><dt className="font-semibold text-[15px]">{f.q}</dt><dd className="mt-1 text-[14px] text-ink-2 leading-relaxed">{f.a}</dd></div>
