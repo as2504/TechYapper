@@ -15,8 +15,12 @@
 - [x] Free users can browse as guests automatically; all concept Basics / Under the Hood free
 - [x] Migrations: topics, activity kinds, verified_activity view, leaderboard(), trending_topics(), user_docs with Pro-gated writes, advisor hardening
 
+## v3 design (done)
+- [x] Topic card deck is the default way in (cover → one line → analogy → key points → 30-second answer → pushback → quick check → "can you explain it?"); full page kept for interview prep and deep dives
+- [x] Dark mode: tokens, system default, toggle in sidebar/mobile header/public nav, no flash on load
+- [x] Spotlight tokens so deep blocks stay deep in both themes
+
 ## Needs Sumit
-- [ ] Supabase → Authentication → Sign In / Providers → Email → turn OFF "Confirm email" (still on: `mailer_autoconfirm=false`)
 - [ ] Optional: Authentication → turn on leaked-password protection
 
 ## In progress

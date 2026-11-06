@@ -21,6 +21,9 @@
   --color-good-wash: #DCEBDD;
   --color-bad: #B8321A;
   --color-bad-wash: #F5DCD4;
+  /* Spotlight: the one deep block per page. Stays deep in both themes. */
+  --color-spot: #16140F;
+  --color-on-spot: #F3EFE6;
   --color-code: #1B1A17;
   --color-code-2: #2A2823;
 
@@ -31,6 +34,32 @@
 
   --radius-sm: 3px;
   --radius-md: 6px;
+}
+
+/* Dark theme: same roles, inverted planes. Ink-on-paper "spotlight" blocks become paper-on-ink automatically. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #131210;
+  --color-paper-2: #1E1C19;
+  --color-shell: #0E0D0C;
+  --color-card: #1A1916;
+  --color-ink: #EFEAE0;
+  --color-ink-2: #CFC8BA;
+  --color-muted: #9C9586;
+  --color-faint: #6F695E;
+  --color-line: #2B2925;
+  --color-line-2: #3B3833;
+  --color-accent: #F2603F;
+  --color-accent-ink: #FF8466;
+  --color-accent-wash: #3A1D15;
+  --color-good: #62C18C;
+  --color-good-wash: #15291E;
+  --color-bad: #FF8466;
+  --color-bad-wash: #3A1D15;
+  --color-spot: #24221E;
+  --color-on-spot: #EFEAE0;
+  --color-code: #0A0A09;
+  --color-code-2: #22201C;
 }
 
 @layer base {
@@ -129,3 +158,7 @@
 .no-scrollbar { scrollbar-width: none; }
 @keyframes ticker { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { [class*="animate-[ticker"] { animation: none !important; } }
+/* Deck card entrance: transform only, so a throttled tab never leaves text half-transparent */
+@keyframes deck-in { from { transform: translateX(14px); } to { transform: none; } }
+.deck-in { animation: deck-in .28s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .deck-in { animation: none; } }

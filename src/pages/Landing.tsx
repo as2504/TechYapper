@@ -38,7 +38,7 @@ export default function Landing() {
               )
             })}
             <li>
-              <Link to="/app/explore" className="group flex items-end h-full min-h-[110px] p-5 rounded-[3px] bg-ink text-paper hover:bg-accent-ink">
+              <Link to="/app/explore" className="group flex items-end h-full min-h-[110px] p-5 rounded-[3px] bg-spot text-on-spot hover:bg-accent-ink">
                 <span className="font-semibold flex items-center gap-2">See all <ArrowRight size={16} /></span>
               </Link>
             </li>
@@ -47,16 +47,16 @@ export default function Landing() {
 
         {/* One example */}
         {demo && (
-          <section className="bg-ink text-paper">
+          <section className="bg-spot text-on-spot">
             <div className="px-5 sm:px-10 py-20 sm:py-28 max-w-[960px] mx-auto">
               <p className="kicker text-accent">How it works</p>
               <h2 className="display text-[34px] sm:text-[52px] font-semibold mt-4 max-w-2xl">Get the words, not just the facts.</h2>
               <div className="mt-12 border-l-2 border-accent pl-6 sm:pl-8">
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-paper/60 text-sm">If someone asks “What is {demo.title}?”</p>
-                  <div className="flex border border-paper/25 rounded-[3px] overflow-hidden" role="group" aria-label="Answer length">
+                  <p className="text-on-spot/60 text-sm">If someone asks “What is {demo.title}?”</p>
+                  <div className="flex border border-on-spot/25 rounded-[3px] overflow-hidden" role="group" aria-label="Answer length">
                     {(['10', '30'] as const).map((l) => (
-                      <button key={l} onClick={() => setLen(l)} aria-pressed={len === l} className={`px-3 py-1 text-xs font-medium ${len === l ? 'bg-paper text-ink' : 'text-paper/70'}`}>{l === '10' ? 'Short' : '30 sec'}</button>
+                      <button key={l} onClick={() => setLen(l)} aria-pressed={len === l} className={`px-3 py-1 text-xs font-medium ${len === l ? 'bg-on-spot text-spot' : 'text-on-spot/70'}`}>{l === '10' ? 'Short' : '30 sec'}</button>
                     ))}
                   </div>
                 </div>

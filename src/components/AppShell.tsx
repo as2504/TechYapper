@@ -2,6 +2,7 @@ import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
 import { Home as HomeIcon, Compass, Swords, Code2, Activity, Flame, LogOut, Sparkles, Trophy, Mic, FileText, Lightbulb, Search } from 'lucide-react'
 import { useEffect } from 'react'
 import { Logo } from './Logo'
+import { ThemeToggle } from './ThemeToggle'
 import { useAuth } from '../lib/auth'
 import { useProgress, useStats } from '../lib/progress'
 
@@ -47,7 +48,7 @@ export function AppShell() {
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       {/* Desktop sidebar: the navigation plane */}
       <aside className="hidden lg:flex flex-col sticky top-0 h-dvh bg-shell border-r border-line px-4 py-6">
-        <div className="px-2"><Logo to="/app" /></div>
+        <div className="px-2 flex items-center justify-between"><Logo to="/app" /><ThemeToggle className="-mr-2" /></div>
 
         <Link to="/app/explore" className="mt-6 flex items-center gap-2.5 h-10 px-3 bg-card border border-line rounded-[3px] text-sm text-faint hover:border-ink-2 hover:text-muted">
           <Search size={15} /> Search topics <kbd className="ml-auto font-mono text-[10px] border border-line px-1 rounded-sm">/</kbd>
@@ -93,10 +94,10 @@ export function AppShell() {
       <header className="lg:hidden sticky top-0 z-30 bg-shell/95 backdrop-blur border-b border-line">
         <div className="flex items-center justify-between h-14 px-4">
           <Logo to="/app" size={24} />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/app/explore" className="text-ink-2" aria-label="Search topics"><Search size={19} /></Link>
             <Link to="/app/project-yap" className="text-ink-2" aria-label="Project Yapping"><Mic size={19} /></Link>
-            <Link to="/app/resume-yap" className="text-ink-2" aria-label="Resume Yapping"><FileText size={19} /></Link>
             <Link to="/app/score" className="flex items-center gap-1 font-mono text-sm font-semibold" aria-label={`${stats.streak} day streak`}>
               <Flame size={17} className={stats.activeToday ? 'text-accent' : 'text-faint'} />{stats.streak}
             </Link>

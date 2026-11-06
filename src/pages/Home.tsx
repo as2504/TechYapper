@@ -59,12 +59,12 @@ export default function Home() {
       {/* Today's yap + daily challenges */}
       <section className="mt-20 grid lg:grid-cols-[1.25fr_1fr] gap-4">
         {today && (
-          <Link to={`/app/yap/${today.slug}`} className="group relative bg-ink text-paper rounded-[3px] p-7 sm:p-9 flex flex-col justify-between min-h-[240px] overflow-hidden">
+          <Link to={`/app/yap/${today.slug}`} className="group relative bg-spot text-on-spot rounded-[3px] p-7 sm:p-9 flex flex-col justify-between min-h-[240px] overflow-hidden">
             <span className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent" />
             <div>
               <p className="kicker text-accent">Today's yap</p>
               <h2 className="display text-[38px] sm:text-[50px] font-semibold mt-3">{today.title}</h2>
-              <p className="mt-3 text-paper/70 text-[16px] max-w-md line-clamp-2">{today.tagline}</p>
+              <p className="mt-3 text-on-spot/70 text-[16px] max-w-md line-clamp-2">{today.tagline}</p>
             </div>
             <span className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold group-hover:text-accent">{find('topic', today.slug) ? 'Review it' : 'Learn to talk about it'} <ArrowRight size={16} /></span>
           </Link>

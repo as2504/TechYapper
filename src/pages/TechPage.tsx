@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowRight, Check, ChevronDown, Copy, ExternalLink, Lock, MessageSquareQuote } from 'lucide-react'
 import { useLibrary } from '../lib/content'
@@ -8,6 +8,7 @@ import { inline, Markdown } from '../components/Markdown'
 import { Explanation, Options, QuizPrompt } from '../components/Quiz'
 import { ProTag } from '../components/ProLock'
 import { LevelChip } from './Battle'
+import { TopicDeck } from '../components/TopicDeck'
 import NotFound from './NotFound'
 
 const TABS = [
@@ -24,11 +25,27 @@ export default function TechPage() {
   const t = lib.techBySlug.get(slug)
   const [params, setParams] = useSearchParams()
   const tab = (TABS.some((x) => x.id === params.get('tab')) ? params.get('tab') : 'understand') as TabId
-  const setTab = (id: TabId) => setParams(id === 'understand' ? {} : { tab: id }, { replace: true })
+  const setTab = (id: TabId) => setParams(id === 'understand' ? { view: 'page' } : { tab: id }, { replace: true })
+  // Cards are the default way in; the full page is for reference, interview prep and going deeper.
+  const pageView = params.has('tab') || params.get('view') === 'page'
+  const openPage = useCallback((tab?: string) => { setParams(tab ? { tab } : { view: 'page' }); window.scrollTo({ top: 0 }) }, [setParams])
 
   useEffect(() => { if (t) { pushRecent(t.slug); document.title = `${t.title} · TechYapper` } return () => { document.title = 'TechYapper' } }, [t])
   if (!t) return <NotFound inApp />
   const cat = CATEGORIES.find((c) => c.id === t.category)
+
+  if (!pageView) return (
+    <div className="px-4 sm:px-10 lg:px-14 py-6 sm:py-12 max-w-[1000px]">
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <nav className="kicker text-muted flex items-center gap-2 min-w-0" aria-label="Breadcrumb">
+          <Link to="/app/explore" className="hover:text-ink">Explore</Link><span>/</span>
+          <span className="truncate">{t.title}</span>
+        </nav>
+        <button onClick={() => openPage()} className="text-sm font-medium text-muted hover:text-ink shrink-0">Full page →</button>
+      </div>
+      <TopicDeck t={t} onOpenPage={openPage} />
+    </div>
+  )
 
   return (
     <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1080px]">
@@ -37,7 +54,10 @@ export default function TechPage() {
         <Link to={`/app/explore#${t.category}`} className="hover:text-ink">{cat?.label}</Link>
       </nav>
       <header className="mt-4">
-        <h1 className="display text-[46px] sm:text-[68px] font-semibold">{t.title}</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="display text-[46px] sm:text-[68px] font-semibold">{t.title}</h1>
+          <button onClick={() => setParams({})} className="btn btn-primary shrink-0 mt-2">Play cards</button>
+        </div>
         <p className="mt-3 text-[18px] sm:text-[20px] font-[family-name:var(--font-serif)] text-ink-2 leading-snug max-w-2xl">{t.tagline}</p>
         <div className="mt-4 flex flex-wrap gap-2"><LevelChip level={t.level} /><span className="chip">{t.minutes} min</span><span className="chip">{t.interview.length} interview Qs</span></div>
       </header>
@@ -90,20 +110,20 @@ function SayIt({ t }: { t: Tech }) {
   const text = len === '10' ? t.talk10 : t.talk30
   const copy = async () => { try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1600) } catch { /* ignore */ } }
   return (
-    <section aria-label="How to talk about it" className="mt-12 bg-ink text-paper relative">
+    <section aria-label="How to talk about it" className="mt-12 bg-spot text-on-spot relative">
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent" />
       <div className="p-6 sm:p-9 pl-7 sm:pl-11">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="kicker text-accent flex items-center gap-2"><MessageSquareQuote size={14} /> If someone asks “What is {t.title}?”</p>
-          <div className="flex border border-paper/30" role="group" aria-label="Answer length">
+          <div className="flex border border-on-spot/30" role="group" aria-label="Answer length">
             {(['10', '30'] as const).map((l) => (
               <button key={l} onClick={() => setLen(l)} aria-pressed={len === l}
-                className={`px-3 py-1.5 font-mono text-[11px] tracking-wider ${len === l ? 'bg-paper text-ink' : 'text-paper/70 hover:text-paper'}`}>{l === '10' ? 'IN ONE BREATH' : 'IN 30 SECONDS'}</button>
+                className={`px-3 py-1.5 font-mono text-[11px] tracking-wider ${len === l ? 'bg-on-spot text-spot' : 'text-on-spot/70 hover:text-on-spot'}`}>{l === '10' ? 'IN ONE BREATH' : 'IN 30 SECONDS'}</button>
             ))}
           </div>
         </div>
         <p key={len} className="mt-5 font-[family-name:var(--font-display)] text-[22px] sm:text-[28px] leading-[1.3] tracking-[-0.01em] max-w-3xl">“{text}”</p>
-        <button onClick={copy} className="mt-6 inline-flex items-center gap-2 text-sm text-paper/70 hover:text-paper">
+        <button onClick={copy} className="mt-6 inline-flex items-center gap-2 text-sm text-on-spot/70 hover:text-on-spot">
           {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? 'Copied' : 'Copy'}
         </button>
       </div>

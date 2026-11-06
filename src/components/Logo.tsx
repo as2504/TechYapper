@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 
 export function Mark({ size = 28, inverted = false }: { size?: number; inverted?: boolean }) {
-  const bg = inverted ? '#F3EFE6' : '#16140F'
-  const fg = inverted ? '#16140F' : '#F3EFE6'
+  // Theme-aware: ink/paper swap in dark mode automatically.
+  const bg = inverted ? 'var(--color-paper)' : 'var(--color-ink)'
+  const fg = inverted ? 'var(--color-ink)' : 'var(--color-paper)'
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
       <path d="M6 6h52v40H26L12 58V46H6z" fill={bg} />
       <path d="M17 18l9 8-9 8" fill="none" stroke={fg} strokeWidth="5" strokeLinecap="square" />
-      <rect x="31" y="30" width="15" height="5" fill="#E5482A" className="caret" />
+      <rect x="31" y="30" width="15" height="5" fill="var(--color-accent)" className="caret" />
     </svg>
   )
 }

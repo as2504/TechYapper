@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Logo } from './Logo'
+import { ThemeToggle } from './ThemeToggle'
 import { useAuth } from '../lib/auth'
 
 export function PublicNav() {
@@ -10,6 +11,7 @@ export function PublicNav() {
       <div className="max-w-[1240px] mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
         <Logo />
         <nav className="flex items-center gap-1 sm:gap-3">
+          <ThemeToggle />
           <Link to="/pricing" className="btn btn-quiet text-sm">Pricing</Link>
           {inside ? (
             <Link to="/app" className="btn btn-primary !h-10">Open the app</Link>
