@@ -1,0 +1,362 @@
+Yap Battle question bank.
+Format: "=== id: x | topic: t | level: beginner|intermediate|advanced | pro: true?" then prompt, optional ```code```, options (- [x] marks the answer), and "> " explanation lines.
+
+=== id: q-url-dns | topic: fundamentals | level: beginner
+You type `techyapper.sumitsk.in` and press Enter. Before any HTTP request can be sent, what must happen first?
+- [ ] The browser downloads the site's JavaScript
+- [x] The hostname is resolved to an IP address via DNS
+- [ ] The server sends a TLS certificate
+- [ ] The browser checks the service worker for HTML
+> Networking runs on IP addresses, not names. The browser checks its own cache, then the OS, then asks a DNS resolver to turn the hostname into an IP. Only then can it open a TCP (or QUIC) connection, negotiate TLS, and send the HTTP request.
+>
+> A service worker can intercept requests for a site you've *already* visited — but on a first visit there's nothing installed yet.
+
+=== id: q-http-status | topic: backend | level: beginner
+An API returns `401 Unauthorized`. What is it actually telling you?
+- [x] You haven't proven who you are — credentials are missing or invalid
+- [ ] You're logged in but not allowed to do this
+- [ ] The resource doesn't exist
+- [ ] The server crashed
+> Despite the name, 401 is about **authentication**: "I don't know who you are." Send valid credentials and retry. **403 Forbidden** is the authorisation one: "I know who you are, and the answer is still no." Mixing them up is one of the most common API-design slips.
+
+=== id: q-git-commit | topic: fundamentals | level: beginner
+What does `git commit` store?
+- [ ] Only the lines you changed (a diff)
+- [x] A snapshot of the staged project tree, plus a pointer to its parent commit
+- [ ] A copy of the whole working directory, including untracked files
+- [ ] A message that is sent to the remote
+> Git stores **snapshots**, not diffs. A commit points to a tree object (the full directory state at that moment, de-duplicated by content hash) and to its parent commit(s). Diffs are computed on demand when you run `git diff` or `git log -p`. Nothing goes to a remote until you push.
+
+=== id: q-sql-where-having | topic: databases | level: beginner
+What's the difference between `WHERE` and `HAVING`?
+- [x] `WHERE` filters rows before grouping; `HAVING` filters groups after aggregation
+- [ ] They're interchangeable; `HAVING` is just older syntax
+- [ ] `HAVING` is faster because it uses indexes
+- [ ] `WHERE` only works on numbers
+> SQL evaluates `FROM` → `WHERE` → `GROUP BY` → `HAVING` → `SELECT` → `ORDER BY`. So `WHERE` can't see `COUNT(*)` — the groups don't exist yet. `HAVING COUNT(*) > 5` filters after aggregation. Filter as early as possible with `WHERE`: fewer rows reach the expensive grouping step.
+
+=== id: q-docker-image-container | topic: devops | level: beginner
+Image vs container — which statement is right?
+- [ ] An image is a running process; a container is the file on disk
+- [x] An image is a read-only template; a container is a running instance of it with its own writable layer
+- [ ] They're the same thing with different names
+- [ ] Containers are virtual machines built from images
+> Think class and object. The image is an immutable stack of filesystem layers plus config. `docker run` creates a container: a thin writable layer on top of the image and an isolated process. Delete the container and its writable layer goes with it — which is why data belongs in volumes.
+
+=== id: q-js-const | topic: languages | level: beginner
+```js
+const user = { name: 'Asha' }
+user.name = 'Ravi'
+```
+What happens?
+- [ ] TypeError: Assignment to constant variable
+- [x] It works — `user.name` is now 'Ravi'
+- [ ] It silently does nothing
+- [ ] SyntaxError
+> `const` makes the **binding** constant: you can't point `user` at a different object. The object itself is still mutable. If you want an immutable object, use `Object.freeze` (shallow) — or better, don't mutate and create new objects instead.
+
+=== id: q-rest-put-patch | topic: backend | level: beginner
+What's the conventional difference between `PUT` and `PATCH`?
+- [x] `PUT` replaces the whole resource; `PATCH` applies a partial update
+- [ ] `PUT` creates; `PATCH` deletes
+- [ ] `PATCH` is idempotent; `PUT` isn't
+- [ ] There's no difference
+> `PUT /users/7` with a body means "make the resource look exactly like this". `PATCH` sends only the changes. `PUT` is defined as idempotent — sending it twice leaves the same state. `PATCH` *can* be idempotent, but isn't guaranteed to be (think "increment counter").
+
+=== id: q-llm-hallucinate | topic: ai | level: beginner
+Why do LLMs sometimes state false things confidently?
+- [ ] They're programmed to guess when they don't have internet access
+- [x] They generate the most plausible next tokens, and plausible isn't the same as true
+- [ ] Their database of facts has errors
+- [ ] Hallucination only happens when the temperature is set to 0
+> An LLM has no lookup table of facts. It predicts likely continuations based on patterns learned in training. When the pattern of a correct-sounding answer is strong but the specific fact is weak or missing, you get fluent fiction. Grounding (RAG), citations and tool use reduce this; low temperature doesn't remove it.
+
+=== id: q-power-apps-delegation | topic: lowcode | level: beginner
+A Power Apps gallery uses `Filter(Orders, Status = "Open")` on a 50,000-row SharePoint list and shows a blue delegation warning. What's the risk?
+- [ ] The app will crash on launch
+- [x] The filter may run locally on only the first 500–2,000 rows, silently missing matches
+- [ ] SharePoint will lock the list
+- [ ] Nothing — the warning is cosmetic
+> When an expression can't be delegated to the data source, Power Apps downloads only the first N rows (500 by default, configurable up to 2,000) and filters them on the device. No error — just quietly incomplete results. Use delegable functions and columns for your data source, or move the logic server-side.
+
+=== id: q-css-box | topic: frontend | level: beginner
+With `box-sizing: border-box`, an element has `width: 200px; padding: 20px; border: 2px solid`. How wide is it on screen?
+- [x] 200px
+- [ ] 244px
+- [ ] 240px
+- [ ] 222px
+> `border-box` makes `width` include padding and border, so the content area shrinks to 156px and the element stays 200px. With the default `content-box`, it'd be 200 + 40 + 4 = 244px. That's why nearly every CSS reset sets `border-box` globally.
+
+=== id: q-hash-vs-encrypt | topic: security | level: beginner
+Why should passwords be hashed rather than encrypted?
+- [ ] Hashing is faster to reverse when users forget their password
+- [x] Hashes are one-way, so a database leak doesn't hand attackers a decryption key to every password
+- [ ] Encryption isn't allowed by law
+- [ ] Hashes take less storage
+> Encryption is reversible by design — whoever holds the key can recover every password. A password hash (bcrypt, scrypt, Argon2) is one-way and deliberately slow, with a unique salt per user. You verify by hashing the login attempt and comparing. That's why "forgot password" sends a reset link, never your old password.
+
+=== id: q-python-list-tuple | topic: languages | level: beginner
+Which is a real reason to use a tuple instead of a list in Python?
+- [ ] Tuples can hold more items
+- [x] Tuples are immutable, so they can be dictionary keys or set members (if their items are hashable)
+- [ ] Tuples are always sorted
+- [ ] Lists can't hold mixed types
+> Immutability makes tuples hashable, so `{(lat, lng): "Pune"}` works while a list key raises `TypeError`. They also signal intent — "this is a fixed record" — and are slightly cheaper to create.
+
+=== id: q-useeffect-deps | topic: frontend | level: intermediate
+```jsx
+useEffect(() => {
+  fetchResults(filters)
+}, [filters])
+```
+`filters` is created inline as `{ q, page }` during render. What happens?
+- [ ] The effect runs once, on mount
+- [ ] The effect runs only when `q` or `page` change
+- [x] The effect runs after every render, because a new object is created each time
+- [ ] React throws a dependency warning and skips the effect
+> Dependencies are compared with `Object.is`. A fresh object literal is a new reference on every render, so the effect re-runs every time — often an infinite fetch loop if the fetch sets state. Depend on the primitives (`[q, page]`) or memoise the object with `useMemo`.
+
+=== id: q-event-loop-order | topic: languages | level: intermediate
+In what order are these logged?
+```js
+console.log('A')
+setTimeout(() => console.log('B'), 0)
+Promise.resolve().then(() => console.log('C'))
+console.log('D')
+```
+- [ ] A B C D
+- [ ] A D B C
+- [x] A D C B
+- [ ] A C D B
+> Synchronous code runs first: A, D. Then the engine drains the **microtask queue** (promise callbacks): C. Only then does the event loop take the next **macrotask** (the timer): B. `setTimeout(fn, 0)` means "no sooner than the next macrotask", not "immediately".
+
+=== id: q-index-like | topic: databases | level: intermediate
+There's a B-tree index on `users(email)`. Which query can't use it to seek efficiently?
+- [ ] `WHERE email = 'a@b.com'`
+- [ ] `WHERE email LIKE 'asha%'`
+- [x] `WHERE email LIKE '%@gmail.com'`
+- [ ] `WHERE email > 'm'`
+> A B-tree is sorted left to right, like a phone book. A known prefix lets the database jump to the right place. A leading wildcard means "could start with anything", so it falls back to scanning. For suffix or substring search, look at trigram indexes (`pg_trgm`) or full-text search. (In Postgres, prefix `LIKE` also needs a C collation or a `text_pattern_ops` index.)
+
+=== id: q-jwt-logout | topic: security | level: intermediate
+Your API uses stateless JWT access tokens valid for 24 hours. A user clicks "log out everywhere". What's the honest problem?
+- [ ] JWTs can't be deleted from the browser
+- [x] Already-issued tokens stay valid until they expire unless you add server-side state (a denylist or token version)
+- [ ] The signature becomes invalid and the user gets a 500 error
+- [ ] JWTs are encrypted, so the server can't read the expiry
+> A JWT is valid if its signature checks out and it hasn't expired — no database lookup. That's the scalability win and the revocation weakness. Real systems use short-lived access tokens (minutes) plus revocable refresh tokens, or check a per-user token version. Also: standard JWTs are *signed*, not encrypted — anyone can read the payload.
+
+=== id: q-rag-why | topic: genai | level: intermediate
+What problem does Retrieval-Augmented Generation mainly solve?
+- [ ] It makes the model smaller and faster
+- [x] It grounds answers in your own, current documents without retraining the model
+- [ ] It replaces the need for prompts
+- [ ] It permanently teaches the model new facts
+> RAG retrieves relevant chunks (usually by embedding similarity, often combined with keyword search) and puts them in the prompt. The model's weights don't change. You get answers about private or fresh data, with citations, and updating knowledge is just re-indexing documents. Quality depends heavily on chunking and retrieval — garbage retrieved, garbage generated.
+
+=== id: q-docker-layer-cache | topic: devops | level: intermediate
+Why do Node Dockerfiles usually `COPY package*.json` and `RUN npm ci` *before* `COPY . .`?
+- [ ] npm requires package.json to be copied first
+- [x] So the dependency layer is cached and only rebuilt when the manifests change, not on every code edit
+- [ ] It reduces the image's attack surface
+- [ ] Docker copies files in alphabetical order anyway
+> Each instruction creates a layer, and a layer is reused if its inputs haven't changed. Copy your whole source first and any edit invalidates the cache, forcing a full reinstall. Copy manifests first and day-to-day builds skip straight past `npm ci`. Order instructions from least to most frequently changing.
+
+=== id: q-mvcc-reads | topic: databases | level: intermediate
+In PostgreSQL, a long report query is reading `orders` while other transactions update rows. Why don't readers and writers block each other?
+- [ ] Postgres locks the whole table for readers
+- [x] MVCC: writers create new row versions, and each transaction reads from its own snapshot
+- [ ] Reads go to a replica automatically
+- [ ] Updates are queued until all reads finish
+> Postgres never overwrites a row in place. An `UPDATE` writes a new tuple version and marks the old one as expired by that transaction. Each query sees the versions visible to its snapshot. The cost: dead tuples pile up and must be cleaned by `VACUUM` — and very long transactions stop that cleanup.
+
+=== id: q-cors-who | topic: security | level: intermediate
+Who enforces CORS?
+- [ ] The API server blocks cross-origin requests
+- [x] The browser — it withholds the response from page JavaScript unless the server's headers allow that origin
+- [ ] The DNS provider
+- [ ] The firewall
+> CORS is a browser rule that *relaxes* the same-origin policy. The server only sends headers like `Access-Control-Allow-Origin`; the browser decides whether your JS may read the response. That's why `curl` or Postman "works" when your frontend doesn't — they aren't browsers. CORS is not an authentication mechanism.
+
+=== id: q-ts-any-unknown | topic: languages | level: intermediate
+What's the practical difference between `any` and `unknown` in TypeScript?
+- [ ] `unknown` is just an alias for `any`
+- [x] You can do anything with `any`; with `unknown` you must narrow the type before using it
+- [ ] `unknown` can only hold `null` or `undefined`
+- [ ] `any` is checked at runtime, `unknown` isn't
+> `any` switches the type checker off — and it spreads. `unknown` says "this could be anything, so prove it": you need a `typeof` check, a type guard or validation (e.g. zod) before calling methods on it. Use `unknown` for JSON, `catch` errors and untrusted input.
+
+=== id: q-cache-invalidation | topic: system-design | level: intermediate
+You cache product pages for 10 minutes. A price changes. What's the most common fix that keeps the cache *and* correct prices?
+- [ ] Disable caching for product pages
+- [ ] Lower the TTL to 1 second
+- [x] Invalidate (or update) the cache entry when the price is written, keeping the TTL as a safety net
+- [ ] Ask users to hard-refresh
+> Pure TTL caching trades freshness for simplicity. Event-driven invalidation — delete or rewrite the key whenever the source of truth changes — gives you fresh data with high hit rates. Keep a TTL anyway so a missed invalidation heals itself.
+
+=== id: q-node-cpu | topic: backend | level: intermediate
+A Node.js API calculates a large PDF report synchronously inside a request handler. What happens to other users' requests during that time?
+- [ ] They're handled in parallel by other threads automatically
+- [x] They wait — the event loop is blocked until the synchronous work finishes
+- [ ] Node kills the slow request after 100ms
+- [ ] They're routed to a different CPU core
+> Your JavaScript runs on one thread. I/O is offloaded, but CPU-heavy synchronous code holds the event loop hostage. Move it to a worker thread, a job queue or a separate service — or run multiple processes (cluster/PM2/containers) so one blocked loop isn't fatal.
+
+=== id: q-embeddings-what | topic: ai | level: intermediate
+In a vector database, what does "these two embeddings have high cosine similarity" mean?
+- [ ] The two texts share many identical words
+- [x] Their vectors point in a similar direction, which the model learned to correlate with similar meaning
+- [ ] They were created at the same time
+- [ ] They're stored on the same disk page
+> An embedding model maps text to a point in a high-dimensional space where semantic similarity becomes geometric closeness. "Reset my password" and "I can't log in" can be close with zero shared words. Cosine similarity compares direction, ignoring length.
+
+=== id: q-supabase-rls-anon | topic: backend | level: intermediate
+A Supabase app ships its anon key in the browser bundle. What actually stops a user from reading everyone's rows?
+- [ ] The anon key is encrypted in the bundle
+- [ ] Supabase hides tables from browsers by default
+- [x] Row Level Security policies on each table, evaluated against the user's JWT
+- [ ] The frontend only queries the user's own rows
+> The anon key is public by design — it just identifies the project. Protection comes from Postgres RLS: with RLS enabled and a policy like `using (auth.uid() = user_id)`, the database itself filters rows. Frontend filtering is a UX choice, not security. Never ship the service-role key, which bypasses RLS.
+
+=== id: q-big-o-hash | topic: fundamentals | level: intermediate
+Why is average lookup in a hash map O(1) but worst case O(n)?
+- [ ] Hash maps sort keys once they get big
+- [x] If many keys collide into the same bucket, lookup degrades to scanning that bucket
+- [ ] The hash function becomes slower as the map grows
+- [ ] Worst case only happens with string keys
+> A good hash spreads keys evenly, so each bucket holds ~1 item. Adversarial or pathological inputs can force collisions. That's why languages randomise hash seeds (Python, Rust) and some implementations (Java's HashMap) turn long buckets into balanced trees, capping worst case at O(log n).
+
+=== id: q-react-keys | topic: frontend | level: advanced
+A list renders `items.map((item, i) => <Row key={i} {...item} />)`. Each `Row` has an uncontrolled text input. The user types into row 2, then an item is inserted at the top. What happens?
+- [ ] Everything works — React tracks the input by its DOM position
+- [x] The typed text appears in the wrong row, because state stays attached to index 2, which is now a different item
+- [ ] React throws a duplicate key error
+- [ ] All inputs are cleared
+> Keys tell React which element is which across renders. With index keys, inserting at the top shifts every index: React thinks the components are the same and just updates props, so DOM state and component state stay at the old position. Use a stable id from your data.
+
+=== id: q-isolation-lost-update | topic: databases | level: advanced
+Two requests run `SELECT balance` then `UPDATE accounts SET balance = <read value> - 100` concurrently under Postgres's default isolation (Read Committed). Both read 500. What's the final balance?
+- [ ] 300 — Postgres serialises them
+- [x] 400 — a lost update; one withdrawal overwrote the other
+- [ ] The second transaction fails with a serialization error
+- [ ] 500 — both roll back
+> Read Committed prevents dirty reads, not lost updates in read-modify-write patterns done in application code. Fixes: do it atomically (`SET balance = balance - 100`), lock the row (`SELECT … FOR UPDATE`), use optimistic concurrency with a version column, or run at Serializable and retry on failure.
+
+=== id: q-rag-chunking | topic: genai | level: advanced
+Your RAG bot answers policy questions badly: it retrieves the right document but the wrong part of it. Which change is most likely to help first?
+- [ ] Switch to a bigger LLM
+- [ ] Raise the temperature
+- [x] Revisit chunking — sensible boundaries, some overlap, headings attached to chunks — and re-rank the top results
+- [ ] Store the whole document as one embedding
+> Retrieval quality caps generation quality. Chunks that split a rule from its exception, or lose the section title, retrieve poorly. Structure-aware chunking with metadata, hybrid search (BM25 + vectors) and a cross-encoder re-ranker typically beat model upgrades for this failure mode.
+
+=== id: q-idempotency-key | topic: system-design | level: advanced
+A mobile client sends `POST /payments`, the network times out, and the client retries. How do you prevent a double charge?
+- [ ] Use `PUT` instead of `POST`
+- [ ] Make the timeout longer
+- [x] Have the client send an idempotency key; the server stores the first result for that key and returns it for retries
+- [ ] Rate-limit the endpoint to one request per minute
+> The client can't know whether the first request succeeded. With an `Idempotency-Key` header (as Stripe and Razorpay-style APIs do), the server records key → outcome atomically. A retry with the same key returns the stored response instead of charging again. Keys need a unique constraint and an expiry.
+
+=== id: q-gil-threads | topic: languages | level: advanced
+A CPU-bound Python (CPython) function is split across 8 threads. Why doesn't it get ~8× faster?
+- [ ] Python threads are not real OS threads
+- [x] The GIL lets only one thread execute Python bytecode at a time in a process
+- [ ] Python automatically limits threads to one CPU core via the OS
+- [ ] The threads are blocked by the garbage collector
+> CPython threads are real OS threads, but the Global Interpreter Lock serialises bytecode execution. Threads still help for I/O-bound work (the GIL is released while waiting). For CPU-bound work use `multiprocessing`, native extensions that release the GIL (NumPy), or the free-threaded builds introduced in Python 3.13.
+
+=== id: q-cors-preflight | topic: security | level: advanced
+Your frontend sends `fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json' } })` to another origin. Before the POST, the browser sends an `OPTIONS` request. Why?
+- [ ] To check whether the server is online
+- [x] JSON content-type makes it a non-simple request, so the browser preflights to ask if the method and headers are allowed
+- [ ] OPTIONS is required for every HTTPS request
+- [ ] To download the CORS policy file
+> "Simple" requests (GET/HEAD/POST with form-like content types and no custom headers) skip preflight. `application/json`, `Authorization` headers or `PUT/DELETE` trigger an `OPTIONS` preflight. The server must answer with matching `Access-Control-Allow-Methods/Headers`. `Access-Control-Max-Age` lets browsers cache that answer.
+
+=== id: q-k8s-liveness | topic: cloud | level: advanced
+A service's liveness probe calls an endpoint that checks the database. The database has a 2-minute outage. What can go wrong?
+- [ ] Nothing — that's what probes are for
+- [x] Every pod fails liveness and gets restarted repeatedly, turning a database blip into a full outage and restart storm
+- [ ] The database gets restarted by Kubernetes
+- [ ] Kubernetes scales the deployment to zero
+> Liveness should answer "is this process wedged?", not "are my dependencies healthy?". Dependency checks belong in readiness probes, which take pods out of load balancing without killing them. Coupling liveness to downstream health causes cascading restarts.
+
+=== id: q-ts-structural | topic: languages | level: advanced
+```ts
+type UserId = string
+type OrderId = string
+function cancel(id: OrderId) {}
+const u: UserId = 'u_123'
+cancel(u)
+```
+What does TypeScript do?
+- [ ] Error: UserId is not assignable to OrderId
+- [x] Compiles fine — both aliases are just `string`, and TS is structurally typed
+- [ ] Runtime error
+- [ ] Compiles only with `strict: false`
+> Type aliases don't create new types; structurally, both are `string`. To prevent mixing IDs, use a branded type: `type OrderId = string & { readonly __brand: 'OrderId' }` and create values through a constructor function.
+
+=== id: q-pro-sd-queue | topic: system-design | level: advanced | pro: true
+An order service publishes "OrderPlaced" to a queue after writing to its DB. Sometimes the DB write succeeds but the publish fails. Which pattern fixes this without distributed transactions?
+- [ ] Publish first, then write to the DB
+- [ ] Retry the publish forever in the request handler
+- [x] Transactional outbox: write the event to an outbox table in the same DB transaction, and relay it to the queue asynchronously
+- [ ] Use a bigger queue
+> The dual-write problem: two systems, no shared transaction. The outbox makes the event part of the same atomic DB commit; a relay (polling or CDC like Debezium) publishes it, at least once. Consumers must therefore be idempotent.
+
+=== id: q-pro-sd-consistent-hash | topic: system-design | level: advanced | pro: true
+Why do distributed caches use consistent hashing instead of `hash(key) % N`?
+- [ ] It's faster to compute
+- [x] When a node is added or removed, only about 1/N of keys move instead of almost all of them
+- [ ] It guarantees no hot keys
+- [ ] It encrypts keys
+> With modulo, changing N remaps nearly every key — a cache stampede on every scale event. Consistent hashing places nodes and keys on a ring; a key belongs to the next node clockwise. Virtual nodes smooth the distribution.
+
+=== id: q-pro-genai-eval | topic: genai | level: intermediate | pro: true
+You change your RAG prompt and answers "feel better". What should you do before shipping?
+- [ ] Ship it — vibes are a valid metric
+- [x] Run it against a fixed evaluation set and compare retrieval and answer metrics with the old version
+- [ ] Ask the LLM if its answers improved
+- [ ] Increase max tokens
+> Without an eval set you can't tell improvement from regression on cases you didn't look at. Keep a set of real questions with expected sources/answers; measure retrieval hit rate, faithfulness and correctness. LLM-as-judge can help scale grading, but calibrate it against human labels.
+
+=== id: q-pro-genai-context | topic: genai | level: advanced | pro: true
+A model has a 200k-token context window. Why might stuffing in 150k tokens of documents still give worse answers than a good RAG pipeline?
+- [ ] Models ignore everything after 8k tokens
+- [x] Relevant details get diluted — models attend less reliably to facts buried mid-context, and cost and latency grow with every token
+- [ ] Long contexts are always truncated by the API
+- [ ] RAG uses a different model
+> Long context is great, but "lost in the middle" effects, distraction by near-miss passages, and per-token cost are real. Retrieving the top relevant chunks keeps prompts focused and cheap. Many systems combine both: retrieve generously, then let a long-context model reason over it.
+
+=== id: q-pro-be-jwt-alg | topic: backend | level: advanced | pro: true
+Why is accepting the `alg` value from a JWT header dangerous?
+- [ ] It makes tokens larger
+- [x] An attacker can switch algorithms (e.g. to `none` or HS256 with the public key as secret) to forge a token the server accepts
+- [ ] The header is encrypted
+- [ ] It breaks refresh tokens
+> Verification must pin the expected algorithm and key server-side. Historic library bugs accepted `alg: none`, or treated an RSA public key as an HMAC secret. Modern libraries require an explicit algorithm list — use it.
+
+=== id: q-pro-be-n-plus-one | topic: backend | level: intermediate | pro: true
+An endpoint lists 50 posts and their authors. Logs show 51 SQL queries. What's this and the usual fix?
+- [ ] A memory leak; restart the server
+- [x] The N+1 query problem; batch the author lookup (JOIN, `WHERE id IN (…)`, or a DataLoader)
+- [ ] Normal behaviour for ORMs
+- [ ] A missing index on posts
+> One query for the list, then one per row for the relation. Eager loading (`include`, `select_related`), a join, or batching via DataLoader collapses it to one or two queries.
+
+=== id: q-pro-fe-hydration | topic: frontend | level: advanced | pro: true
+A server-rendered React page logs "Text content does not match server-rendered HTML". The component renders `new Date().toLocaleTimeString()`. Why?
+- [ ] React can't render dates on the server
+- [x] The server and client produce different output, so hydration finds a mismatch
+- [ ] The CSS loaded late
+- [ ] useEffect ran twice
+> Hydration expects the first client render to match the server HTML exactly. Time, randomness, `window` checks and locale differences break that. Render stable output first, then update in an effect, or mark deliberate differences with `suppressHydrationWarning`.
+
+=== id: q-pro-low-dataverse | topic: lowcode | level: intermediate | pro: true
+When does it make sense to move a Power Apps solution from SharePoint lists to Dataverse?
+- [ ] Never — SharePoint is always enough
+- [x] When you need relational data, row-level security roles, server-side logic and delegation at scale
+- [ ] Only when the app has more than 10 screens
+- [ ] When you want the app to load faster offline
+> SharePoint lists are fine for simple, small data. Dataverse gives real relationships, business rules, security roles down to row and column level, auditing and much better delegation support. The trade-off is premium licensing — which is exactly the conversation stakeholders want you to lead.

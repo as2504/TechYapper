@@ -1,0 +1,289 @@
+Code or Explain challenge bank.
+Format: "=== id | kind: predict|bug|explain|implementation|complexity|approach | title | topic | level | pro?"
+
+=== id: c-closure-loop | kind: predict | title: The classic closure loop | topic: languages | level: beginner
+What does this print?
+```js
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0)
+}
+```
+- [ ] 0 1 2
+- [x] 3 3 3
+- [ ] 2 2 2
+- [ ] undefined undefined undefined
+> `var` is function-scoped, so all three callbacks close over the *same* `i`. By the time the timers fire, the loop has finished and `i` is 3. Change `var` to `let` and each iteration gets its own binding → `0 1 2`.
+
+=== id: c-async-foreach | kind: bug | title: Await inside forEach | topic: languages | level: intermediate
+This function is supposed to save all users and then log "done". Users are often still saving when "done" appears. Why?
+```js
+async function saveAll(users) {
+  users.forEach(async (u) => {
+    await db.save(u)
+  })
+  console.log('done')
+}
+```
+- [ ] `db.save` isn't awaited correctly — it needs `.then()`
+- [x] `forEach` ignores the promises returned by the async callback, so nothing waits for them
+- [ ] `async` functions can't be used as callbacks
+- [ ] `console.log` runs on a different thread
+> `forEach` calls your callback and throws away its return value — here, a promise. The outer function moves on immediately. Use `await Promise.all(users.map(u => db.save(u)))` for parallel saves, or a `for…of` loop with `await` for sequential ones.
+
+=== id: c-py-default-arg | kind: predict | title: The mutable default | topic: languages | level: intermediate
+What does the last line print?
+```python
+def add_tag(tag, tags=[]):
+    tags.append(tag)
+    return tags
+
+add_tag("react")
+add_tag("sql")
+print(add_tag("rag"))
+```
+- [ ] ['rag']
+- [x] ['react', 'sql', 'rag']
+- [ ] ['sql', 'rag']
+- [ ] TypeError
+> Default values are evaluated **once**, when the function is defined. Every call without `tags` shares the same list. The idiom is `tags=None` and then `if tags is None: tags = []` inside the function.
+
+=== id: c-sql-null | kind: predict | title: NOT IN meets NULL | topic: databases | level: advanced
+`banned_ids` contains the values (2, NULL). How many rows does this return from a `users` table with ids 1, 2, 3?
+```sql
+SELECT id FROM users
+WHERE id NOT IN (SELECT user_id FROM banned_ids);
+```
+- [ ] 2 rows: 1 and 3
+- [ ] 1 row: 3
+- [x] 0 rows
+- [ ] An error
+> `id NOT IN (2, NULL)` means `id <> 2 AND id <> NULL`. Anything compared to NULL is UNKNOWN, so the whole condition is never TRUE. Zero rows. Use `NOT EXISTS` instead, which handles NULLs the way you expect.
+
+=== id: c-react-state-batch | kind: predict | title: Three increments | topic: frontend | level: intermediate
+`count` starts at 0. The button is clicked once. What does it show afterwards?
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0)
+  const onClick = () => {
+    setCount(count + 1)
+    setCount(count + 1)
+    setCount(count + 1)
+  }
+  return <button onClick={onClick}>{count}</button>
+}
+```
+- [x] 1
+- [ ] 3
+- [ ] 0
+- [ ] It re-renders three times and shows 3
+> `count` is a constant within this render — it's 0 in all three calls. Each call schedules "set to 1", and React batches them into one render. Use the updater form `setCount(c => c + 1)` three times to get 3.
+
+=== id: c-explain-debounce | kind: explain | title: What does this utility do? | topic: frontend | level: intermediate
+Explain what calling the returned function does.
+```js
+function mystery(fn, ms) {
+  let t
+  return (...args) => {
+    clearTimeout(t)
+    t = setTimeout(() => fn(...args), ms)
+  }
+}
+```
+- [ ] Calls `fn` at most once every `ms` milliseconds, starting immediately
+- [x] Delays `fn` until calls have stopped for `ms` milliseconds, then calls it once with the last arguments
+- [ ] Calls `fn` exactly `ms` times
+- [ ] Retries `fn` after `ms` if it throws
+> That's a **debounce**. Each call cancels the pending timer and starts a new one, so `fn` only runs after a quiet period. Typical use: search-as-you-type. The first option describes **throttle**, which guarantees regular execution during continuous activity (like scroll handlers).
+
+=== id: c-complexity-nested | kind: complexity | title: Pairs that sum to target | topic: fundamentals | level: beginner
+What's the time complexity?
+```python
+def has_pair(nums, target):
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return True
+    return False
+```
+- [ ] O(n)
+- [ ] O(n log n)
+- [x] O(n²)
+- [ ] O(2ⁿ)
+> Every pair is checked once: n(n−1)/2 comparisons, which is O(n²). A set-based version is O(n): for each number, check whether `target - x` has been seen, then add `x` to the set.
+
+=== id: c-impl-race | kind: implementation | title: Fetch without the race | topic: frontend | level: advanced
+A search box fetches results whenever `query` changes. Which effect avoids showing results for an old query when responses arrive out of order?
+```jsx
+// A
+useEffect(() => { search(query).then(setResults) }, [query])
+
+// B
+useEffect(() => {
+  let stale = false
+  search(query).then(r => { if (!stale) setResults(r) })
+  return () => { stale = true }
+}, [query])
+
+// C
+useEffect(() => { search(query).then(setResults) }, [])
+```
+- [ ] A
+- [x] B
+- [ ] C
+- [ ] All three are equivalent
+> When `query` changes, React runs B's cleanup for the previous effect, marking that response as stale. A slow, older response then gets ignored. A applies whichever response arrives last. C only searches once. An `AbortController` is an even better version of B — it also cancels the network request.
+
+=== id: c-sql-index-order | kind: approach | title: Which index? | topic: databases | level: intermediate
+This query runs thousands of times a minute. Which single index helps most?
+```sql
+SELECT * FROM orders
+WHERE customer_id = $1
+ORDER BY created_at DESC
+LIMIT 20;
+```
+- [ ] `CREATE INDEX ON orders (created_at)`
+- [x] `CREATE INDEX ON orders (customer_id, created_at DESC)`
+- [ ] `CREATE INDEX ON orders (created_at, customer_id)`
+- [ ] Separate indexes on each column — Postgres combines them perfectly
+> A composite index with the equality column first, then the sort column, lets Postgres jump to one customer's entries already in date order and stop after 20 rows — no sort step. Column order matters: `(created_at, customer_id)` can't seek by customer.
+
+=== id: c-docker-bug | kind: bug | title: Works on my machine | topic: devops | level: beginner
+This container starts, but the app is unreachable at `localhost:3000` on the host. The app listens on port 3000. What's missing?
+```dockerfile
+FROM node:22-alpine
+WORKDIR /app
+COPY . .
+RUN npm ci
+CMD ["node", "server.js"]
+
+# started with:
+# docker run my-app
+```
+- [ ] The Dockerfile needs `EXPOSE 3000` or nothing will work
+- [x] The port isn't published — run with `-p 3000:3000` (and make sure the app listens on 0.0.0.0, not 127.0.0.1)
+- [ ] Alpine images can't run Node servers
+- [ ] `CMD` should be `RUN`
+> `EXPOSE` is documentation; it doesn't open anything. `-p host:container` publishes the port. The other classic trap: an app bound to `127.0.0.1` inside the container only accepts connections from inside that container.
+
+=== id: c-explain-git-rebase | kind: explain | title: Read this Git history | topic: fundamentals | level: intermediate
+What did this command do to `feature`?
+```bash
+git checkout feature
+git rebase main
+```
+- [ ] Merged main into feature with a merge commit
+- [x] Replayed feature's commits on top of main's latest commit, creating new commits with new hashes
+- [ ] Deleted feature's commits and copied main
+- [ ] Pushed feature to main
+> Rebase takes the commits unique to `feature`, and re-applies them one by one on top of `main`. The result is a linear history, but every replayed commit is new (new parent → new hash). That's why you shouldn't rebase commits others have already pulled.
+
+=== id: c-ts-narrow | kind: bug | title: The narrowing that isn't | topic: languages | level: intermediate
+TypeScript reports an error on the marked line. Why?
+```ts
+type Shape = { kind: 'circle'; r: number } | { kind: 'square'; side: number }
+
+function area(s: Shape) {
+  if (s.kind === 'circle') return Math.PI * s.r ** 2
+  return s.r * s.r // ← error
+}
+```
+- [ ] `**` isn't supported in TypeScript
+- [x] After the `if`, `s` is narrowed to the square variant, which has no `r`
+- [ ] Discriminated unions need a `switch` statement
+- [ ] `kind` must be a number
+> TypeScript narrows on the discriminant: once the circle case returns, the remaining type is `{ kind: 'square'; side: number }`. The fix is `s.side * s.side`. This is exactly the bug discriminated unions exist to catch.
+
+=== id: c-node-promise-reject | kind: predict | title: The unhandled rejection | topic: backend | level: intermediate
+In Node.js 22, what happens when this runs?
+```js
+async function load() {
+  throw new Error('db down')
+}
+load()
+console.log('still running')
+setTimeout(() => console.log('later'), 100)
+```
+- [ ] Prints "still running" and "later"; the error is silently ignored
+- [x] Prints "still running", then the process crashes with the unhandled rejection before "later"
+- [ ] Crashes immediately before printing anything
+- [ ] Prints "db down" as a warning, then "later"
+> `load()` returns a rejected promise synchronously and nobody handles it. The synchronous log runs first. Once microtasks drain, Node detects the unhandled rejection and — since Node 15 — the default mode is `throw`, which terminates the process. Always `await` or `.catch()` promises.
+
+=== id: c-rag-approach | kind: approach | title: Searching your docs | topic: genai | level: intermediate
+Users search internal docs with queries like "ERR_4012 refund failed" and "how do refunds work?". Which retrieval approach handles both well?
+- [ ] Pure vector search
+- [ ] Pure keyword (BM25) search
+- [x] Hybrid search: BM25 + vector similarity, merged (e.g. reciprocal rank fusion)
+- [ ] Ask the LLM to guess which doc is relevant
+> Embeddings are great at meaning ("how do refunds work") but weak on exact tokens like error codes. BM25 nails exact terms but misses paraphrases. Hybrid retrieval combines both rankings, and is the default recommendation for most production RAG systems.
+
+=== id: c-powerfx-delegation | kind: approach | title: Delegable or not? | topic: lowcode | level: intermediate
+A Dataverse table has 120,000 rows. Which formula returns *all* matching records instead of only the first batch?
+```powerfx
+// A
+Filter(Tickets, StartsWith(Title, txtSearch.Text))
+// B
+Filter(Tickets, Len(Title) > 10)
+// C
+Filter(Tickets, Right(Title, 3) = "BUG")
+```
+- [x] A
+- [ ] B
+- [ ] C
+- [ ] None of them — Dataverse never delegates
+> `StartsWith` is delegable to Dataverse, so the server does the filtering. `Len` and `Right` inside a filter can't be translated to a server query, so Power Apps fetches only the first 500–2,000 rows and filters locally. Prefix search is the delegation-friendly pattern.
+
+=== id: c-pro-deadlock | kind: explain | title: Two transfers, one deadlock | topic: databases | level: advanced | pro: true
+Two transactions run at the same time. Why does Postgres abort one of them?
+```sql
+-- T1
+UPDATE accounts SET bal = bal - 10 WHERE id = 1;
+UPDATE accounts SET bal = bal + 10 WHERE id = 2;
+-- T2
+UPDATE accounts SET bal = bal - 5 WHERE id = 2;
+UPDATE accounts SET bal = bal + 5 WHERE id = 1;
+```
+- [ ] Postgres can't update two rows in one transaction
+- [x] Each holds a row lock the other needs — a deadlock; Postgres detects the cycle and aborts one
+- [ ] The balance went negative
+- [ ] Both transactions read stale data
+> T1 locks row 1, T2 locks row 2, then each waits on the other. The deadlock detector breaks the cycle by aborting one. The standard fix: always lock rows in a consistent order (e.g. ascending id).
+
+=== id: c-pro-memo | kind: bug | title: The memo that never memoises | topic: frontend | level: advanced | pro: true
+`Chart` is wrapped in `React.memo`, yet it re-renders every time `Dashboard` does. Why?
+```jsx
+function Dashboard({ data }) {
+  return <Chart data={data} options={{ stacked: true }} onHover={(p) => log(p)} />
+}
+```
+- [ ] `React.memo` only works on class components
+- [x] `options` and `onHover` are new references every render, so the shallow prop comparison fails
+- [ ] `data` is too large to compare
+- [ ] Memoised components always render at least twice
+> `memo` compares props with `Object.is`. Inline objects and arrow functions are recreated each render. Hoist constants, use `useMemo` for objects and `useCallback` for handlers — or let the React Compiler do it.
+
+=== id: c-pro-complexity-heap | kind: complexity | title: Top K from a stream | topic: fundamentals | level: advanced | pro: true
+You keep the K largest of N numbers using a min-heap of size K. What's the time complexity?
+```python
+import heapq
+def top_k(nums, k):
+    heap = []
+    for x in nums:
+        heapq.heappush(heap, x)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap
+```
+- [ ] O(N log N)
+- [x] O(N log K)
+- [ ] O(N·K)
+- [ ] O(K log N)
+> Each of the N elements does a push/pop on a heap of at most K+1 items, costing O(log K). For K ≪ N that's much better than sorting everything, and uses only O(K) memory.
+
+=== id: c-pro-cache-stampede | kind: approach | title: The midnight stampede | topic: system-design | level: advanced | pro: true
+A popular cache key expires and 5,000 requests hit the database simultaneously to rebuild it. Which approach prevents this?
+- [ ] Shorter TTLs
+- [ ] More database replicas only
+- [x] Request coalescing / a rebuild lock (one request recomputes, others wait or get stale data), plus jittered TTLs
+- [ ] Disable the cache at peak hours
+> A thundering herd happens when many readers miss at once. Let one request take a lock and recompute while others serve the stale value (stale-while-revalidate), and add random jitter so keys don't expire together.
