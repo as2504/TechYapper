@@ -13,9 +13,11 @@
 - [x] Content: 19 concepts, 42 questions (8 Pro), 19 challenges (4 Pro); validator + seed generator
 - [x] Supabase schema, RLS, trigger, RPC; migration + seed pushed
 - [x] PWA manifest, service worker, offline app shell
+- [x] Yap Projects (Pro): 4 projects × 3 personas (student / working dev / interview) with build plan, pitch, talking points, follow-ups
+- [x] Deployed to Vercel production (https://techyapper.vercel.app), GitHub auto-deploys from main, domain added to project
 
 ## In progress
-- [ ] Deploy to Vercel + `techyapper.sumitsk.in`
+- [ ] Custom domain live once DNS CNAME resolves
 
 ## Blocked (needs Sumit)
 - [ ] Supabase Auth: disable "Confirm email" (built-in mailer only reaches team addresses) and set Site URL / redirect URLs

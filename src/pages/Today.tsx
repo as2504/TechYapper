@@ -6,6 +6,7 @@ import { useProgress, useStats } from '../lib/progress'
 import { issueNumber, prettyDate } from '../lib/dates'
 import { TOPICS, type Concept } from '../content/types'
 import { ProTag } from '../components/ProLock'
+import { PROJECTS } from '../content/projects'
 
 export default function Today() {
   const d = useDaily()
@@ -76,6 +77,22 @@ export default function Today() {
         <PillarCard to="/app/battle" n="02" title="Yap Battle" body={`${d.questions.length} questions, beginner to advanced. Earn up to ${d.questions.length * 20} XP.`} done={d.progress.battle} total={d.questions.length} />
         <PillarCard to="/app/code" n="03" title="Code or Explain" body="Predict the output, find the bug, name the complexity." done={d.progress.code} total={d.challenges.length} />
       </section>
+
+      {/* Concept → project bridge */}
+      {(() => {
+        const proj = PROJECTS.find((p) => d.concepts.some((c) => p.concepts.includes(c.slug)))
+        if (!proj) return null
+        return (
+          <Link to={`/app/projects/${proj.slug}`} className="mt-12 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 border-y border-ink py-6 group">
+            <span className="kicker text-accent-ink shrink-0 flex items-center gap-2">Build it · <ProTag /></span>
+            <span className="flex-1">
+              <span className="block font-[family-name:var(--font-display)] text-[24px] font-semibold leading-tight group-hover:text-accent-ink">{proj.title}</span>
+              <span className="block text-sm text-muted mt-1">A Yap Project that uses today's concepts — with a pitch you can say in an interview.</span>
+            </span>
+            <ArrowRight size={18} className="text-muted shrink-0 hidden sm:block" />
+          </Link>
+        )
+      })()}
 
       {/* Back issues */}
       <section className="mt-14">

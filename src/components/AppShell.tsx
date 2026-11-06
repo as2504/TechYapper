@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
-import { BookOpen, Swords, Code2, Activity, Bookmark, Flame, LogOut, Route as RouteIcon, Sparkles } from 'lucide-react'
+import { BookOpen, Swords, Code2, Activity, Bookmark, Flame, LogOut, Route as RouteIcon, Sparkles, FolderGit2 } from 'lucide-react'
 import { useEffect } from 'react'
 import { Logo } from './Logo'
 import { useAuth } from '../lib/auth'
@@ -45,6 +45,9 @@ export function AppShell() {
           <NavLink to="/app/tracks" className={({ isActive }) => `flex items-baseline gap-3 py-2.5 border-b border-line ${isActive ? 'text-ink font-semibold' : 'text-muted hover:text-ink font-medium'}`}>
             <span className="font-mono text-[11px]">06</span><span className="text-[15px]">Interview Tracks</span><span className="ml-auto pro-tag self-center">PRO</span>
           </NavLink>
+          <NavLink to="/app/projects" className={({ isActive }) => `flex items-baseline gap-3 py-2.5 border-b border-line ${isActive ? 'text-ink font-semibold' : 'text-muted hover:text-ink font-medium'}`}>
+            <span className="font-mono text-[11px]">07</span><span className="text-[15px]">Yap Projects</span><span className="ml-auto pro-tag self-center">PRO</span>
+          </NavLink>
         </nav>
 
         <div className="mt-8 flex items-center gap-3">
@@ -83,6 +86,7 @@ export function AppShell() {
           <div className="flex items-center gap-3">
             {!isPro && <Link to="/app/upgrade" className="pro-tag !py-1" aria-label="Upgrade to Pro"><Sparkles size={11} /> PRO</Link>}
             <Link to="/app/tracks" className="text-ink-2" aria-label="Interview tracks"><RouteIcon size={19} /></Link>
+            <Link to="/app/projects" className="text-ink-2" aria-label="Yap projects"><FolderGit2 size={19} /></Link>
             <Link to="/app/score" className="flex items-center gap-1 font-mono text-sm font-semibold" aria-label={`${stats.streak} day streak`}>
               <Flame size={17} className={stats.activeToday ? 'text-accent' : 'text-faint'} />{stats.streak}
             </Link>

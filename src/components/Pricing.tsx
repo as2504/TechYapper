@@ -16,6 +16,7 @@ export const FEATURES: { label: string; free: boolean | string; pro: boolean | s
   { label: 'Knowledge archive', free: 'Last 3 days', pro: 'Everything' },
   { label: 'Level 3 Deep Dives on advanced concepts', free: false, pro: true },
   { label: 'Interview tracks (Frontend, Backend, AI, Power Platform)', free: 'Step 1 only', pro: true },
+  { label: 'Yap Projects — build plans + talking points for student, dev and interview', free: 'Preview', pro: true },
   { label: 'Advanced code challenges', free: false, pro: true },
   { label: 'Premium question collections', free: false, pro: true },
   { label: 'Weak-spot analytics & learning path', free: false, pro: 'Coming soon' },

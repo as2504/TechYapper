@@ -13,6 +13,7 @@ import Score from './pages/Score'
 import Library from './pages/Library'
 import Tracks from './pages/Tracks'
 import Upgrade from './pages/Upgrade'
+import { ProjectDetail, ProjectsIndex } from './pages/Projects'
 import NotFound from './pages/NotFound'
 
 function RequireAccess({ children }: { children: ReactNode }) {
@@ -47,6 +48,8 @@ export default function App() {
         <Route path="library" element={<Library />} />
         <Route path="tracks" element={<Tracks />} />
         <Route path="upgrade" element={<Upgrade />} />
+        <Route path="projects" element={<ProjectsIndex />} />
+        <Route path="projects/:slug" element={<ProjectDetail />} />
         <Route path="*" element={<NotFound inApp />} />
       </Route>
       <Route path="*" element={<NotFound />} />
