@@ -21,7 +21,7 @@ const SAMPLE: ProjectInput = {
 export default function ProjectYap() {
   const { isPro } = useProgress()
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1120px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1120px]">
       <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink flex items-center gap-2">Project Yapping <ProTag /></p>
         <h1 className="display text-[40px] sm:text-[58px] font-semibold mt-2">Explain your project like you built it.</h1>

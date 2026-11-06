@@ -56,7 +56,7 @@ export default function ConceptPage() {
   }
 
   return (
-    <article className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <article className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <div className="flex items-center justify-between">
         <Link to="/app" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-ink"><ArrowLeft size={15} /> Today</Link>
         <div className="flex items-center gap-1">

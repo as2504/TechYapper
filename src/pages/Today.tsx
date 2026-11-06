@@ -18,7 +18,7 @@ export default function Today() {
   const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       {/* Masthead */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-ink">
         <p className="kicker text-muted">No. {issueNumber(d.today)} · {prettyDate(d.today)}</p>

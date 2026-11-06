@@ -18,7 +18,7 @@ export default function Leaderboard() {
   const me = rows?.find((r) => r.is_me)
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1080px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1080px]">
       <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink">Leaderboard</p>
         <h1 className="display text-[44px] sm:text-[60px] font-semibold mt-2">Who's yapping most.</h1>

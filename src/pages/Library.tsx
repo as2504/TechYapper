@@ -24,7 +24,7 @@ export default function Library() {
   }, [tab, saved, bySlug, concepts, q, topic])
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <PageHead kicker="Your knowledge library" title="Library" dek={`${concepts.length} deep reads across ${topics.length} areas.`} />
 
       <div className="mt-6 flex flex-wrap items-center gap-4 justify-between">

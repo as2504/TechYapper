@@ -31,7 +31,7 @@ export default function TechPage() {
   const cat = CATEGORIES.find((c) => c.id === t.category)
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1080px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1080px]">
       <nav className="kicker text-muted flex items-center gap-2" aria-label="Breadcrumb">
         <Link to="/app/explore" className="hover:text-ink">Explore</Link><span>/</span>
         <Link to={`/app/explore#${t.category}`} className="hover:text-ink">{cat?.label}</Link>
@@ -57,7 +57,7 @@ export default function TechPage() {
         </div>
       </div>
 
-      <div className="mt-8 sm:mt-10" role="tabpanel">
+      <div className="mt-12 sm:mt-16" role="tabpanel">
         {tab === 'understand' && <Understand t={t} />}
         {tab === 'talk' && <Talk t={t} />}
         {tab === 'deeper' && <Deeper t={t} />}
@@ -90,7 +90,7 @@ function SayIt({ t }: { t: Tech }) {
   const text = len === '10' ? t.talk10 : t.talk30
   const copy = async () => { try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1600) } catch { /* ignore */ } }
   return (
-    <section aria-label="How to talk about it" className="mt-8 bg-ink text-paper relative">
+    <section aria-label="How to talk about it" className="mt-12 bg-ink text-paper relative">
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent" />
       <div className="p-6 sm:p-9 pl-7 sm:pl-11">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -111,39 +111,73 @@ function SayIt({ t }: { t: Tech }) {
   )
 }
 
-function Block({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
-  return (
-    <section className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-10 py-6 border-b border-line first:pt-0">
-      <h2 className="font-[family-name:var(--font-display)] text-[20px] sm:text-[22px] font-semibold leading-tight" data-n={n}>{title}</h2>
-      <div className="min-w-0">{children}</div>
-    </section>
-  )
+const P = ({ s }: { s: string }) => <Markdown source={s} className="prose-yap !text-[17px] !leading-[1.7]" />
+
+/** Split "**Term** rest of sentence." into a headline and a quiet note. */
+function splitPoint(raw: string) {
+  const r = splitRaw(raw)
+  const head = r.head.replace(/[\s:.,-]+$/, '')
+  return { head, note: r.note ? r.note.charAt(0).toUpperCase() + r.note.slice(1) : '' }
+}
+function splitRaw(k: string) {
+  const m = /^\*\*(.+?)\*\*[\s:.,-]*(.*)$/.exec(k)
+  if (m) return { head: m[1], note: m[2] }
+  const i = k.search(/[.:]\s/)
+  return i > 0 && i < 70 ? { head: k.slice(0, i), note: k.slice(i + 2) } : { head: k, note: '' }
 }
 
-const P = ({ s }: { s: string }) => <Markdown source={s} className="prose-yap !text-[17px]" />
-
 function Understand({ t }: { t: Tech }) {
+  const [open, setOpen] = useState<string | null>(null)
+  const more = [
+    { id: 'why', title: 'Why does it exist?', body: <P s={t.why} /> },
+    { id: 'how', title: 'How does it work?', body: <P s={t.how} /> },
+    { id: 'where', title: "Where you'll see it", body: <ul className="grid gap-2.5 text-[16px]">{t.where.map((w) => <li key={w} className="flex gap-3"><span className="mt-2.5 w-1.5 h-1.5 bg-accent rounded-full shrink-0" />{inline(w)}</li>)}</ul> },
+    ...(t.facts.length ? [{ id: 'facts', title: 'Fun facts to drop in', body: <ul className="grid gap-2.5 text-[16px] text-ink-2">{t.facts.map((f) => <li key={f}>{inline(f)}</li>)}</ul> }] : []),
+  ]
   return (
-    <div>
-      <Block n="A" title="What is it?"><P s={t.what} /></Block>
-      <Block n="B" title="Why does it exist?"><P s={t.why} /></Block>
-      <Block n="C" title="How it works"><P s={t.how} /></Block>
-      <Block n="D" title="Think of it like…">
-        <p className="tint font-[family-name:var(--font-serif)] italic text-[19px] sm:text-[21px] leading-snug border-l-2 border-accent px-5 py-4">{t.analogy}</p>
-      </Block>
-      <Block n="E" title="Where you'll see it">
-        <ul className="grid gap-2">{t.where.map((w) => <li key={w} className="flex gap-3 text-[16px]"><span className="mt-2.5 w-1.5 h-1.5 bg-accent rounded-full shrink-0" />{inline(w)}</li>)}</ul>
-      </Block>
-      <Block n="F" title={`${t.know.length} things worth knowing`}>
-        <ol className="grid gap-3">{t.know.map((k, i) => (
-          <li key={i} className="grid grid-cols-[28px_1fr] text-[16px] leading-relaxed"><span className="font-mono text-sm text-muted pt-0.5">{String(i + 1).padStart(2, '0')}</span><span>{inline(k)}</span></li>
-        ))}</ol>
-      </Block>
-      {t.facts.length > 0 && (
-        <Block n="G" title="Worth dropping in conversation">
-          <ul className="grid gap-3">{t.facts.map((f) => <li key={f} className="text-[16px] text-ink-2 leading-relaxed">{inline(f)}</li>)}</ul>
-        </Block>
-      )}
+    <div className="grid gap-14 sm:gap-16">
+      <section className="max-w-2xl">
+        <Markdown source={t.what} className="prose-yap !text-[19px] sm:!text-[21px] !leading-[1.6]" />
+      </section>
+
+      <section>
+        <h2 className="kicker text-faint mb-5">Remember these</h2>
+        <ol className="grid sm:grid-cols-2 gap-x-10 gap-y-8">
+          {t.know.map((k, i) => {
+            const { head, note } = splitPoint(k)
+            return (
+              <li key={i} className="grid grid-cols-[32px_1fr]">
+                <span className="font-mono text-sm text-accent pt-0.5">{i + 1}</span>
+                <div>
+                  <p className="font-semibold text-[17px] leading-snug">{inline(head)}</p>
+                  {note && <p className="mt-1.5 text-[15px] text-muted leading-relaxed">{inline(note)}</p>}
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </section>
+
+      <section className="tint px-6 sm:px-10 py-8 sm:py-10">
+        <p className="kicker text-faint">Think of it like</p>
+        <p className="mt-3 font-[family-name:var(--font-display)] text-[21px] sm:text-[25px] leading-[1.4] max-w-2xl">{t.analogy}</p>
+      </section>
+
+      <section>
+        <h2 className="kicker text-faint mb-2">Want more?</h2>
+        <ul className="border-t border-line">
+          {more.map((m) => (
+            <li key={m.id} className="border-b border-line">
+              <button onClick={() => setOpen(open === m.id ? null : m.id)} aria-expanded={open === m.id}
+                className="w-full flex items-center justify-between gap-4 py-5 text-left group">
+                <span className="font-[family-name:var(--font-display)] text-[19px] sm:text-[21px] font-semibold group-hover:text-accent-ink">{m.title}</span>
+                <ChevronDown size={18} className={`text-muted transition-transform ${open === m.id ? 'rotate-180' : ''}`} />
+              </button>
+              {open === m.id && <div className="pb-7 max-w-2xl">{m.body}</div>}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   )
 }

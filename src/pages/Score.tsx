@@ -17,7 +17,7 @@ export default function Score() {
   const pct = Math.min(100, Math.round(((s.xp - cur) / Math.max(1, next - cur)) * 100))
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <PageHead title="Yap Score" dek="What you've learned, and how well you know it." />
 
       {/* Hero numbers */}

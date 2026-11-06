@@ -25,7 +25,7 @@ export default function Upgrade() {
 
   if (isPro) {
     return (
-      <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[900px]">
+      <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[900px]">
         <PageHead kicker="Your plan" title={<>You're <em className="font-normal">Pro</em>.</>} dek={subscription?.plan === 'pro_preview'
           ? `Your free Pro preview runs until ${new Date(subscription.current_period_end!).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}. No card on file, nothing will be charged.`
           : 'Thanks for backing TechYapper.'} />
@@ -41,7 +41,7 @@ export default function Upgrade() {
   }
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1100px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1100px]">
       <PageHead kicker="Upgrade" title={<>Go <em className="font-normal">Pro</em>.</>} dek="Project Yapping, Resume Yapping, advanced interview answers, every Deep Dive and the advanced challenges." />
 
       <div className="mt-10 grid lg:grid-cols-[1fr_400px] gap-10">

@@ -15,7 +15,7 @@ const uid = () => Math.random().toString(36).slice(2, 10)
 export default function ResumeYap() {
   const { isPro } = useProgress()
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <header className="border-b border-line pb-6">
         <p className="kicker text-accent-ink flex items-center gap-2">Resume Yapping <ProTag /></p>
         <h1 className="display text-[40px] sm:text-[58px] font-semibold mt-2">Say what you did. Get a bullet you can defend.</h1>

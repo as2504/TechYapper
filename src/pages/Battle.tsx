@@ -40,7 +40,7 @@ export default function Battle() {
   }
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <PageHead title="Yap Battle" dek="5 questions, beginner to advanced. One try each."
         right={<div className="flex gap-8 text-right"><Stat k="Accuracy" v={`${stats.accuracy}%`} /><Stat k="Streak" v={`${stats.streak}d`} /></div>} />
 
@@ -131,6 +131,7 @@ function History() {
   const { questions } = useLibrary()
   const { activities } = useProgress()
   const [openId, setOpenId] = useState<string | null>(null)
+  const [all, setAll] = useState(false)
   const past = useMemo(() => {
     const map = new Map(questions.map((q) => [q.id, q]))
     return activities.filter((a) => a.kind === 'battle').reverse().map((a) => ({ a, q: map.get(a.item_id) })).filter((x): x is { a: typeof x.a; q: Question } => !!x.q)
@@ -139,17 +140,17 @@ function History() {
   return (
     <section className="mt-16">
       <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
-        <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Your battle log</h2>
-        <span className="font-mono text-xs text-muted">{past.length} ANSWERED</span>
+        <h2 className="font-[family-name:var(--font-display)] text-[21px] font-semibold tracking-[-0.015em]">Past answers</h2>
+        <span className="text-sm text-muted">{past.length}</span>
       </div>
       <ul className="divide-y divide-line">
-        {past.map(({ a, q }) => (
+        {(all ? past : past.slice(0, 5)).map(({ a, q }) => (
           <li key={q.id}>
             <button onClick={() => setOpenId(openId === q.id ? null : q.id)} className="w-full grid grid-cols-[14px_1fr_auto] gap-4 items-center py-4 text-left group" aria-expanded={openId === q.id}>
               <span className={`w-2.5 h-2.5 ${a.correct ? 'bg-good' : 'bg-bad'}`} aria-label={a.correct ? 'correct' : 'wrong'} />
               <span>
-                <span className="block font-medium leading-snug group-hover:text-accent-ink [&_code]:inline-code">{q.prompt}</span>
-                <span className="block font-mono text-[11px] text-muted mt-1">{prettyDate(a.activity_date, { day: 'numeric', month: 'short' })} · {q.difficulty.toUpperCase()} · {TOPICS[q.topic].label.toUpperCase()}</span>
+                <span className="block font-medium leading-snug group-hover:text-accent-ink line-clamp-1 [&_code]:inline-code">{q.prompt}</span>
+                <span className="block text-xs text-muted mt-1">{prettyDate(a.activity_date, { day: 'numeric', month: 'short' })} · {TOPICS[q.topic].label}</span>
               </span>
               <ChevronDown size={16} className={`text-muted transition-transform ${openId === q.id ? 'rotate-180' : ''}`} />
             </button>
@@ -162,6 +163,7 @@ function History() {
           </li>
         ))}
       </ul>
+      {past.length > 5 && <button onClick={() => setAll(!all)} className="mt-4 text-sm font-medium text-muted hover:text-ink">{all ? 'Show less' : `Show all ${past.length}`}</button>}
     </section>
   )
 }
@@ -176,21 +178,21 @@ function PremiumSets() {
     { title: 'Backend Under Pressure', topic: 'backend', body: 'Idempotency, auth, transactions and failure modes.' },
   ]
   return (
-    <section className="mt-16">
+    <section className="mt-20">
       <div className="flex items-baseline justify-between border-b border-line-2 pb-2.5">
-        <h2 className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]">Premium collections</h2>
-        <ProTag />
+        <h2 className="font-[family-name:var(--font-display)] text-[21px] font-semibold tracking-[-0.015em]">Pro question sets</h2>
+        {!isPro && <ProTag />}
       </div>
-      <div className="grid md:grid-cols-3 border-b border-line">
-        {sets.map((s, i) => (
-          <Link key={s.title} to={isPro ? '/app/tracks' : '/app/upgrade'} className={`py-6 ${i ? 'md:border-l md:pl-6' : ''} md:pr-6 border-b md:border-b-0 border-line group`}>
-            <p className="kicker text-muted flex items-center gap-1.5">{!isPro && <Lock size={11} />}{TOPICS[s.topic as keyof typeof TOPICS].label}</p>
-            <h3 className="mt-2 font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight group-hover:text-accent-ink">{s.title}</h3>
-            <p className="mt-2 text-sm text-ink-2">{s.body}</p>
-            <p className="mt-3 font-mono text-xs text-muted">{pro.filter((q) => q.topic === s.topic).length} PRO QUESTIONS · GROWING WEEKLY</p>
-          </Link>
+      <ul className="mt-5 grid sm:grid-cols-3 gap-3">
+        {sets.map((s) => (
+          <li key={s.title}>
+            <Link to={isPro ? '/app/tracks' : '/app/upgrade'} className="group panel flex flex-col justify-between h-full min-h-[104px] p-5 hover:border-ink-2">
+              <span className="font-semibold leading-snug group-hover:text-accent-ink flex items-start justify-between gap-3">{s.title}{!isPro && <Lock size={14} className="text-faint mt-1 shrink-0" />}</span>
+              <span className="text-xs text-muted mt-3">{pro.filter((q) => q.topic === s.topic).length} questions</span>
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )
 }

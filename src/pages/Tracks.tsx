@@ -23,7 +23,7 @@ export default function Tracks() {
   const proQs = questions.filter((q) => q.pro && track.topics.includes(q.topic))
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <PageHead kicker="Pro · Structured paths" title={<>Interview <em className="font-normal">Tracks</em></>}
         dek="Concepts and questions in the order interviews escalate." />
 

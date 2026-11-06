@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Check, FileText, Mic, Swords, Code2, Trophy } from 'lucide-react'
 import { useLibrary } from '../lib/content'
 import { useAuth } from '../lib/auth'
-import { readRecent, useProgress, useStats } from '../lib/progress'
+import { readRecent, useProgress } from '../lib/progress'
 import { useDaily } from '../lib/useDaily'
 import { useLeaderboard, useTrending } from '../lib/community'
 import { dateKey, dayNumber } from '../lib/dates'
@@ -13,9 +13,8 @@ import { ProTag } from '../components/ProLock'
 
 export default function Home() {
   const lib = useLibrary()
-  const { displayName, guest } = useAuth()
+  const { guest } = useAuth()
   const { find, isPro } = useProgress()
-  const stats = useStats()
   const d = useDaily()
   const week = useLeaderboard('week')
   const trending = useTrending()
@@ -26,19 +25,18 @@ export default function Home() {
   const picks = trend ?? lib.techs.filter((t) => t.popular).slice(0, 5).map((t) => ({ t, n: 0 }))
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-8 sm:py-14 max-w-[1120px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-20 max-w-[1080px]">
       {/* Discover */}
       <section>
-        <p className="kicker text-muted">{guest ? 'Welcome' : `Hi ${displayName.split(' ')[0]}`}{stats.streak > 0 && ` · ${stats.streak}-day streak`}</p>
-        <h1 className="display text-[40px] sm:text-[64px] font-semibold mt-3 max-w-3xl">What do you want to yap about today?</h1>
-        <p className="mt-3 text-[17px] sm:text-[19px] text-ink-2 max-w-2xl">Discover technology, understand the concepts, and learn how to talk about them.</p>
-        <div className="mt-7 max-w-3xl"><SearchBox /></div>
+        <h1 className="display text-[40px] sm:text-[64px] font-semibold max-w-3xl">What do you want to yap about today?</h1>
+        <p className="mt-4 text-[16px] sm:text-[18px] text-muted max-w-xl">Discover technology, understand the concepts, and learn how to talk about them.</p>
+        <div className="mt-10 max-w-3xl"><SearchBox /></div>
       </section>
 
       {/* Continue */}
       {recent.length > 0 && (
-        <section className="mt-14">
-          <SectionHead title="Continue yapping" />
+        <section className="mt-20">
+          <SectionHead title="Continue" />
           <ul className="mt-3 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {recent.map((t) => {
               const done = !!find('topic', t!.slug)
@@ -59,7 +57,7 @@ export default function Home() {
       )}
 
       {/* Today's yap + daily challenges */}
-      <section className="mt-14 grid lg:grid-cols-[1.25fr_1fr] gap-4">
+      <section className="mt-20 grid lg:grid-cols-[1.25fr_1fr] gap-4">
         {today && (
           <Link to={`/app/yap/${today.slug}`} className="group relative bg-ink text-paper rounded-[3px] p-7 sm:p-9 flex flex-col justify-between min-h-[240px] overflow-hidden">
             <span className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent" />
@@ -82,28 +80,28 @@ export default function Home() {
       </section>
 
       {/* Explore */}
-      <section className="mt-14">
-        <SectionHead title="Explore topics" to="/app/explore" more="All topics" />
-        <div className="mt-2 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
+      <section className="mt-20">
+        <SectionHead title="Explore" to="/app/explore" more="All topics" />
+        <ul className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
           {CATEGORIES.map((c) => {
-            const items = lib.techs.filter((t) => t.category === c.id)
-            if (!items.length) return null
+            const n = lib.techs.filter((t) => t.category === c.id).length
+            if (!n) return null
             return (
-              <div key={c.id} className="py-4 border-b border-line">
-                <Link to={`/app/explore#${c.id}`} className="kicker text-muted hover:text-ink">{c.label}</Link>
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {items.map((t) => <Link key={t.slug} to={`/app/yap/${t.slug}`} className="text-[14px] font-medium px-2.5 py-1 bg-card border border-line rounded-[3px] hover:border-ink hover:text-ink text-ink-2">{t.title}</Link>)}
-                </div>
-              </div>
+              <li key={c.id}>
+                <Link to={`/app/explore#${c.id}`} className="group panel flex flex-col justify-between h-full min-h-[104px] p-4 sm:p-5 hover:border-ink-2">
+                  <span className="font-semibold text-[15px] sm:text-[16px] leading-snug group-hover:text-accent-ink">{c.label}</span>
+                  <span className="text-xs text-muted mt-3">{n} topic{n > 1 ? 's' : ''}</span>
+                </Link>
+              </li>
             )
           })}
-        </div>
+        </ul>
       </section>
 
       {/* Trending + career tools */}
-      <section className="mt-14 grid lg:grid-cols-2 gap-12">
+      <section className="mt-20 grid lg:grid-cols-2 gap-14">
         <div>
-          <SectionHead title={trend ? 'Trending this week' : 'Popular picks'} />
+          <SectionHead title={trend ? 'Trending' : 'Popular'} />
           <ol className="divide-y divide-line">
             {picks.map(({ t, n }, i) => (
               <li key={t!.slug}>
@@ -117,10 +115,10 @@ export default function Home() {
           </ol>
         </div>
         <div>
-          <SectionHead title="Talk about your own work" />
+          <SectionHead title="Your work" />
           <ul className="divide-y divide-line">
-            <Tool to="/app/project-yap" icon={Mic} title="Project Yapping" body="Turn your project into a clear, honest explanation for interviews." pro={!isPro} />
-            <Tool to="/app/resume-yap" icon={FileText} title="Resume Yapping" body="Turn what you did into ATS-friendly resume bullets, without inventing anything." pro={!isPro} />
+            <Tool to="/app/project-yap" icon={Mic} title="Project Yapping" body="Explain your project clearly." pro={!isPro} />
+            <Tool to="/app/resume-yap" icon={FileText} title="Resume Yapping" body="Turn your work into resume bullets." pro={!isPro} />
           </ul>
         </div>
       </section>

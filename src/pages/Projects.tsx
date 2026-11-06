@@ -12,7 +12,7 @@ import NotFound from './NotFound'
 export function ProjectsIndex() {
   const { bySlug } = useLibrary()
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <PageHead kicker="Pro · From theory to something you built" title="Project ideas"
         dek="Projects to build from what you've learned, with a plan and talking points." />
       <ul className="mt-2 divide-y divide-line">
@@ -47,7 +47,7 @@ export function ProjectDetail() {
   const v = p.variants[persona]
 
   return (
-    <article className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-[1180px]">
+    <article className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
       <Link to="/app/projects" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-ink"><ArrowLeft size={15} /> All projects</Link>
       <header className="mt-6 max-w-[860px]">
         <div className="flex items-center gap-3"><span className="kicker text-accent-ink">Yap Project · {TOPICS[p.topic].label}</span><ProTag /></div>
