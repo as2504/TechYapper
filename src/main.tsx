@@ -8,7 +8,17 @@ import { AuthProvider } from './lib/auth'
 import { ProgressProvider } from './lib/progress'
 import { ContentProvider } from './lib/content'
 
-registerSW({ immediate: true })
+// autoUpdate reloads the page once a new service worker takes over.
+// Also check for a new deploy whenever the tab comes back into view, and hourly.
+registerSW({
+  immediate: true,
+  onRegisteredSW(_url, reg) {
+    if (!reg) return
+    const check = () => { if (navigator.onLine) reg.update().catch(() => {}) }
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check() })
+    setInterval(check, 60 * 60 * 1000)
+  },
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

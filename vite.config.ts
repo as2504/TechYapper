@@ -26,10 +26,19 @@ export default defineConfig({
         ],
       },
       workbox: {
-        navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api/],
+        // Page HTML is network-first so a new deploy shows up on the next visit;
+        // the precached shell is only the offline fallback. Hashed JS/CSS stay precached.
+        navigateFallback: null,
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         runtimeCaching: [
+          {
+            urlPattern: ({ request, url }) => request.mode === 'navigate' && !url.pathname.startsWith('/api'),
+            handler: 'NetworkFirst',
+            options: { cacheName: 'pages', networkTimeoutSeconds: 4, precacheFallback: { fallbackURL: 'index.html' } },
+          },
           {
             urlPattern: ({ url }) => url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com',
             handler: 'StaleWhileRevalidate',
