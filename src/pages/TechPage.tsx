@@ -43,7 +43,7 @@ export default function TechPage() {
         </nav>
         <button onClick={() => openPage()} className="text-sm font-medium text-muted hover:text-ink shrink-0">Full page →</button>
       </div>
-      <TopicDeck t={t} onOpenPage={openPage} />
+      <TopicDeck t={t} onOpenPage={openPage} startAt={params.get('card') ?? undefined} />
     </div>
   )
 

@@ -21,6 +21,9 @@
   --color-good-wash: #DCEBDD;
   --color-bad: #B8321A;
   --color-bad-wash: #F5DCD4;
+  /* Rust: knowledge that's fading and needs a refresh */
+  --color-rust: #B9781C;
+  --color-rust-wash: #F3E4C6;
   /* Spotlight: the one deep block per page. Stays deep in both themes. */
   --color-spot: #16140F;
   --color-on-spot: #F3EFE6;
@@ -56,6 +59,8 @@
   --color-good-wash: #15291E;
   --color-bad: #FF8466;
   --color-bad-wash: #3A1D15;
+  --color-rust: #E2A64B;
+  --color-rust-wash: #33270F;
   --color-spot: #24221E;
   --color-on-spot: #EFEAE0;
   --color-code: #0A0A09;

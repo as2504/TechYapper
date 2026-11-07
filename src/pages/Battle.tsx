@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ChevronDown, Flame, Lock, RotateCcw, Trophy } from 'lucide-react'
+import { ArrowRight, ChevronDown, Flame, Lock, RotateCcw, Share2, Timer, Trophy } from 'lucide-react'
+import { shareBattle } from '../lib/shareCard'
 import { PageHead } from '../components/AppShell'
 import { Explanation, Options, QuizPrompt } from '../components/Quiz'
 import { useDaily } from '../lib/useDaily'
@@ -8,7 +9,7 @@ import { useLibrary } from '../lib/content'
 import { useProgress, useStats, XP } from '../lib/progress'
 import { TOPICS, type Difficulty, type Question } from '../content/types'
 import { ProTag } from '../components/ProLock'
-import { prettyDate } from '../lib/dates'
+import { dateKey, prettyDate } from '../lib/dates'
 
 const LEVEL_STYLE: Record<Difficulty, string> = {
   beginner: 'border-line-2 text-ink-2',
@@ -19,6 +20,8 @@ const LEVEL_STYLE: Record<Difficulty, string> = {
 export function LevelChip({ level }: { level: Difficulty }) {
   return <span className={`chip ${LEVEL_STYLE[level]}`}>{level}</span>
 }
+
+const LIMIT = 20
 
 export default function Battle() {
   const { questions } = useDaily()
@@ -35,9 +38,22 @@ export default function Battle() {
   const act = find('battle', q.id)
 
   const answer = (i: number) => {
+    if (act) return
     const ok = i === q.answer
     record({ kind: 'battle', item_id: q.id, correct: ok, choice: i, xp: ok ? XP.battle[q.difficulty] : XP.attempt })
   }
+  // 20 seconds per question. Running out counts as a miss.
+  const [left, setLeft] = useState(LIMIT)
+  useEffect(() => { setLeft(LIMIT) }, [q.id])
+  useEffect(() => {
+    if (act || finished) return
+    if (left <= 0) { record({ kind: 'battle', item_id: q.id, correct: false, choice: null, xp: XP.attempt }); return }
+    const id = setTimeout(() => setLeft((x) => x - 1), 1000)
+    return () => clearTimeout(id)
+  }, [left, act, finished, q.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Combo: consecutive correct answers up to the latest one.
+  let combo = 0
+  for (let k = results.length - 1; k >= 0; k--) { const r = results[k]; if (!r) continue; if (r.correct) combo++; else break }
 
   return (
     <div className="px-5 sm:px-10 lg:px-14 py-10 sm:py-16 max-w-[1180px]">
@@ -61,7 +77,7 @@ export default function Battle() {
       </ol>
 
       {finished && round >= questions.length ? (
-        <Scorecard score={score} total={questions.length} xp={earned} streak={stats.streak} onReview={() => setRound(0)} />
+        <Scorecard score={score} total={questions.length} xp={earned} streak={stats.streak} rounds={results.map((r) => (r ? !!r.correct : null))} onReview={() => setRound(0)} />
       ) : (
         <section className="mt-8 grid xl:grid-cols-[minmax(0,760px)_220px] gap-12">
           <div className="min-w-0" key={q.id}>
@@ -69,13 +85,16 @@ export default function Battle() {
               <span className="font-mono text-xs text-muted">Round {round + 1} of {questions.length}</span>
               <LevelChip level={q.difficulty} />
               <span className="chip">{TOPICS[q.topic].label}</span>
-              <span className="ml-auto font-mono text-xs text-accent-ink">{XP.battle[q.difficulty]} XP</span>
+              {combo >= 2 && <span className="chip !border-accent !text-accent-ink"><Flame size={11} /> {combo} in a row</span>}
+              <span className="ml-auto flex items-center gap-1.5 font-mono text-xs text-accent-ink">{!act && <><Timer size={13} /> {left}s ·</>} {XP.battle[q.difficulty]} XP</span>
             </div>
+            {!act && <div className="h-1 rounded-full bg-paper-2 mb-6 overflow-hidden"><div className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${left <= 5 ? 'bg-accent' : 'bg-ink-2'}`} style={{ width: `${(left / LIMIT) * 100}%` }} /></div>}
             <QuizPrompt quiz={q} />
-            <Options quiz={q} chosen={act?.choice ?? null} onChoose={answer} />
-            {act?.choice != null && (
+            <Options quiz={q} chosen={act?.choice ?? null} onChoose={answer} disabled={!!act} />
+            {act && (
               <>
-                <Explanation quiz={q} chosen={act.choice} xp={act.xp} />
+                {act.choice == null && <p className="mt-4 text-sm font-semibold text-accent-ink">Time is up.</p>}
+                <Explanation quiz={q} chosen={act.choice ?? -1} xp={act.xp} />
                 <div className="mt-6 flex justify-end">
                   {round < questions.length - 1 ? (
                     <button className="btn btn-primary" onClick={() => setRound(round + 1)}>Next round <ArrowRight size={16} /></button>
@@ -107,21 +126,23 @@ export default function Battle() {
   )
 }
 
-function Scorecard({ score, total, xp, streak, onReview }: { score: number; total: number; xp: number; streak: number; onReview: () => void }) {
+function Scorecard({ score, total, xp, streak, rounds, onReview }: { score: number; total: number; xp: number; streak: number; rounds: (boolean | null)[]; onReview: () => void }) {
+  const [shared, setShared] = useState('')
   const verdict = score === total ? 'Flawless. You could teach this.' : score >= total - 1 ? 'Sharp. One slipped through.' : score >= total / 2 ? 'Solid. Read the explanations — that\'s where it sticks.' : 'Rough round. The explanations are the real prize.'
   return (
-    <section className="mt-8 border border-ink bg-ink text-paper p-7 sm:p-12 rise">
+    <section className="mt-8 rounded-[6px] bg-spot text-on-spot p-7 sm:p-12">
       <p className="kicker text-accent">Today's battle · complete</p>
-      <p className="display text-[96px] sm:text-[140px] font-semibold mt-2">{score}<span className="text-paper/40">/{total}</span></p>
+      <p className="display text-[96px] sm:text-[140px] font-semibold mt-2">{score}<span className="text-on-spot/40">/{total}</span></p>
       <p className="font-[family-name:var(--font-display)] italic text-[24px] sm:text-[30px] mt-2">{verdict}</p>
-      <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 border-t border-paper/20 pt-6 max-w-xl">
-        <div><p className="font-mono text-xs text-paper/60">XP EARNED</p><p className="text-3xl font-semibold mt-1">+{xp}</p></div>
-        <div><p className="font-mono text-xs text-paper/60">STREAK</p><p className="text-3xl font-semibold mt-1 flex items-center gap-2"><Flame className="text-accent" size={24} />{streak}</p></div>
-        <div className="col-span-2 sm:col-span-1"><p className="font-mono text-xs text-paper/60">NEXT BATTLE</p><p className="text-3xl font-semibold mt-1">Tomorrow</p></div>
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 border-t border-on-spot/20 pt-6 max-w-xl">
+        <div><p className="font-mono text-xs text-on-spot/60">XP EARNED</p><p className="text-3xl font-semibold mt-1">+{xp}</p></div>
+        <div><p className="font-mono text-xs text-on-spot/60">STREAK</p><p className="text-3xl font-semibold mt-1 flex items-center gap-2"><Flame className="text-accent" size={24} />{streak}</p></div>
+        <div className="col-span-2 sm:col-span-1"><p className="font-mono text-xs text-on-spot/60">NEXT BATTLE</p><p className="text-3xl font-semibold mt-1">Tomorrow</p></div>
       </div>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link to="/app/code" className="btn btn-accent">Next: Code or Explain <ArrowRight size={16} /></Link>
-        <button onClick={onReview} className="btn border border-paper/40 hover:bg-paper hover:text-ink"><RotateCcw size={15} /> Review answers</button>
+        <button onClick={async () => { const r = await shareBattle({ score, total, rounds, streak, date: dateKey() }); setShared(r === 'downloaded' ? 'Image saved, caption copied' : r === 'shared' ? 'Shared' : '') }} className="btn btn-accent"><Share2 size={16} /> {shared || 'Share my score'}</button>
+        <Link to="/app/code" className="btn border border-on-spot/40 hover:bg-on-spot hover:text-spot">Next: Code or Explain <ArrowRight size={16} /></Link>
+        <button onClick={onReview} className="btn border border-on-spot/40 hover:bg-on-spot hover:text-spot"><RotateCcw size={15} /> Review answers</button>
       </div>
     </section>
   )

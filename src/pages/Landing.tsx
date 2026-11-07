@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { PublicNav, Footer } from '../components/PublicNav'
 import { SearchBox } from '../components/SearchBox'
 import { useLibrary } from '../lib/content'
-import { CATEGORIES } from '../content/types'
+import { PeriodicTable } from '../components/PeriodicTable'
 
 export default function Landing() {
   const lib = useLibrary()
@@ -22,27 +22,13 @@ export default function Landing() {
           <div className="mt-12"><SearchBox autoFocus /></div>
         </section>
 
-        {/* Categories */}
-        <section className="px-5 sm:px-10 pb-24 sm:pb-32 max-w-[960px] mx-auto">
-          <ul className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {CATEGORIES.map((c) => {
-              const n = lib.techs.filter((t) => t.category === c.id).length
-              if (!n) return null
-              return (
-                <li key={c.id}>
-                  <Link to={`/app/explore#${c.id}`} className="group panel flex flex-col justify-between h-full min-h-[110px] p-5 hover:border-ink-2">
-                    <span className="font-semibold leading-snug group-hover:text-accent-ink">{c.label}</span>
-                    <span className="text-xs text-muted mt-3">{n} topic{n > 1 ? 's' : ''}</span>
-                  </Link>
-                </li>
-              )
-            })}
-            <li>
-              <Link to="/app/explore" className="group flex items-end h-full min-h-[110px] p-5 rounded-[3px] bg-spot text-on-spot hover:bg-accent-ink">
-                <span className="font-semibold flex items-center gap-2">See all <ArrowRight size={16} /></span>
-              </Link>
-            </li>
-          </ul>
+        {/* The table */}
+        <section className="px-5 sm:px-10 pb-24 sm:pb-32 max-w-[1040px] mx-auto">
+          <div className="flex items-baseline justify-between gap-4 mb-6">
+            <h2 className="font-[family-name:var(--font-display)] text-[24px] sm:text-[30px] font-semibold">The Periodic Table of Tech</h2>
+            <p className="hidden sm:block text-sm text-muted">Light up every element.</p>
+          </div>
+          <PeriodicTable />
         </section>
 
         {/* One example */}

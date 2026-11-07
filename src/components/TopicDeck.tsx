@@ -6,6 +6,7 @@ import { inline } from './Markdown'
 import { Explanation, Options, QuizPrompt } from './Quiz'
 import { useProgress, XP } from '../lib/progress'
 import { useLibrary } from '../lib/content'
+import { YourTurn } from './YourTurn'
 
 type Tone = 'ink' | 'accent' | 'card' | 'tint'
 interface Card { key: string; label: string; tone: Tone; body: ReactNode }
@@ -27,7 +28,7 @@ function point(k: string) {
 }
 
 /** The default way to learn a topic: one idea per screen, tap or swipe through. */
-export function TopicDeck({ t, onOpenPage }: { t: Tech; onOpenPage: (tab?: string) => void }) {
+export function TopicDeck({ t, onOpenPage, startAt }: { t: Tech; onOpenPage: (tab?: string) => void; startAt?: string }) {
   const { find, record } = useProgress()
   const lib = useLibrary()
   const [i, setI] = useState(0)
@@ -43,7 +44,7 @@ export function TopicDeck({ t, onOpenPage }: { t: Tech; onOpenPage: (tab?: strin
         <div>
           <h2 className={`${big} display text-[52px] sm:text-[84px] leading-[0.95]`}>{t.title}</h2>
           <p className="mt-6 text-[18px] sm:text-[21px] text-muted max-w-lg leading-snug">{t.tagline}</p>
-          <p className="mt-10 text-sm text-muted">{t.know.length + (t.comebacks.length ? 7 : 6)} cards · about 2 minutes</p>
+          <p className="mt-10 text-sm text-muted">{t.know.length + (t.comebacks.length ? 8 : 7)} cards · about 2 minutes</p>
         </div>) },
       { key: 'one', label: 'In one line', tone: 'ink', body: (
         <p className={`${big} text-[28px] sm:text-[42px] leading-[1.18]`}>{t.talk10}</p>) },
@@ -73,6 +74,7 @@ export function TopicDeck({ t, onOpenPage }: { t: Tech; onOpenPage: (tab?: strin
             </div>
           ))}
         </div>) }] : []),
+      { key: 'turn', label: 'Your turn', tone: 'card', body: <YourTurn t={t} heads={t.know.map((k) => point(k).head)} /> },
       { key: 'check', label: 'Quick check', tone: 'card', body: (
         <div onClick={(e) => e.stopPropagation()}>
           <QuizPrompt quiz={t.check} size="md" />
@@ -95,7 +97,7 @@ export function TopicDeck({ t, onOpenPage }: { t: Tech; onOpenPage: (tab?: strin
 
   const last = cards.length - 1
   const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(last, x + d))), [last])
-  useEffect(() => { setI(0) }, [t.slug])
+  useEffect(() => { const n = startAt ? cards.findIndex((c) => c.key === startAt) : 0; setI(n > 0 ? n : 0) }, [t.slug, startAt]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const on = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'TEXTAREA') return

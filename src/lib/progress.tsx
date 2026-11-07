@@ -4,7 +4,7 @@ import { useAuth } from './auth'
 import { supabase } from './supabase'
 import { addDays, dateKey } from './dates'
 
-export type ActivityKind = 'read' | 'check' | 'battle' | 'challenge' | 'topic' | 'tcheck' | 'iq'
+export type ActivityKind = 'read' | 'check' | 'battle' | 'challenge' | 'topic' | 'tcheck' | 'iq' | 'say'
 
 export interface Activity {
   kind: ActivityKind
@@ -32,6 +32,7 @@ export const XP = {
   topic: 15,
   tcheck: 10,
   iq: 5,
+  say: 10,
 }
 
 interface ProgressState {
