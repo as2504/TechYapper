@@ -141,7 +141,7 @@ function Scorecard({ score, total, xp, streak, rounds, onReview }: { score: numb
       </div>
       <div className="mt-8 flex flex-wrap gap-3">
         <button onClick={async () => { const r = await shareBattle({ score, total, rounds, streak, date: dateKey() }); setShared(r === 'downloaded' ? 'Image saved, caption copied' : r === 'shared' ? 'Shared' : '') }} className="btn btn-accent"><Share2 size={16} /> {shared || 'Share my score'}</button>
-        <Link to="/app/code" className="btn border border-on-spot/40 hover:bg-on-spot hover:text-spot">Next: Code or Explain <ArrowRight size={16} /></Link>
+        <Link to="/app/duel" className="btn border border-on-spot/40 hover:bg-on-spot hover:text-spot">Duel a friend <ArrowRight size={16} /></Link>
         <button onClick={onReview} className="btn border border-on-spot/40 hover:bg-on-spot hover:text-spot"><RotateCcw size={15} /> Review answers</button>
       </div>
     </section>

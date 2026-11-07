@@ -12,6 +12,7 @@ import TechPage from './pages/TechPage'
 import Leaderboard from './pages/Leaderboard'
 import ProjectYap from './pages/ProjectYap'
 import ResumeYap from './pages/ResumeYap'
+import { DuelPlay, DuelStart } from './pages/Duel'
 import ConceptPage from './pages/ConceptPage'
 import Battle from './pages/Battle'
 import CodeOrExplain from './pages/CodeOrExplain'
@@ -53,6 +54,8 @@ export default function App() {
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="project-yap" element={<ProjectYap />} />
         <Route path="resume-yap" element={<ResumeYap />} />
+        <Route path="duel" element={<DuelStart />} />
+        <Route path="duel/:code" element={<DuelPlay />} />
         <Route path="concept/:slug" element={<ConceptPage />} />
         <Route path="battle" element={<Battle />} />
         <Route path="code" element={<CodeOrExplain />} />

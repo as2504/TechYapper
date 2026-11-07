@@ -89,10 +89,13 @@ export default function Home() {
           </div>
 
         </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Link to="/app/duel" className="flex items-center gap-2 text-sm font-semibold hover:text-accent-ink"><Swords size={17} className="text-accent" /> Duel a friend</Link>
         <Link to="/app/leaderboard" className="flex items-center gap-3 text-sm hover:text-accent-ink">
           <Trophy size={18} className="text-accent" />
-          {me ? <span><strong>#{me.rank}</strong> this week · {me.xp} XP</span> : <span className="text-muted">{guest ? 'Sign up to join the leaderboard' : 'Earn XP to get ranked'}</span>}
+          {me ? <span><strong>#{me.rank}</strong> this week · {me.xp} XP</span> : <span className="text-muted">{guest ? 'Sign up to join a league' : 'See your league'}</span>}
         </Link>
+        </div>
       </section>
 
       {/* Rusty */}

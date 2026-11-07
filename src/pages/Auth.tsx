@@ -37,7 +37,9 @@ function useAfterAuth() {
   const [params] = useSearchParams()
   const loc = useLocation()
   const from = (loc.state as { from?: string } | null)?.from
-  return () => nav(params.get('next') === 'upgrade' ? '/app/upgrade' : from || '/app', { replace: true })
+  // ?next=upgrade, or any in-app path like ?next=/app/duel/abc123
+  const next = params.get('next')
+  return () => nav(next === 'upgrade' ? '/app/upgrade' : next?.startsWith('/app') ? next : from || '/app', { replace: true })
 }
 
 function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
